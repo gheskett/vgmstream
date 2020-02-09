@@ -696,7 +696,7 @@ void reset_vgmstream(VGMSTREAM * vgmstream) {
 
 #ifdef VGM_USE_G7221
     if (vgmstream->coding_type == coding_G7221C) {
-        reset_g7221(vgmstream);
+        reset_g7221(vgmstream->codec_data);
     }
 #endif
 
@@ -880,7 +880,7 @@ void close_vgmstream(VGMSTREAM * vgmstream) {
 
 #ifdef VGM_USE_G7221
     if (vgmstream->coding_type == coding_G7221C) {
-        free_g7221(vgmstream);
+        free_g7221(vgmstream->codec_data);
         vgmstream->codec_data = NULL;
     }
 #endif
