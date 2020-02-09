@@ -20,6 +20,39 @@ void decode_pcm16be(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspa
     }
 }
 
+void decode_tri_lin_be(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int32_t sample_rate) {
+
+    // TODO: fft stuffs
+    int32_t hist1 = stream->adpcm_history1_32;
+
+    int i;
+    int32_t sample_count;
+    const sample_t triOffset = (sample_t)clamp16(0x00EA6000 / sample_rate);
+
+    for (i = first_sample, sample_count = 0; i < first_sample + samples_to_do; i++, sample_count += channelspacing) {
+        sample_t val = read_16bitBE(stream->offset + i * 2, stream->streamfile);
+        if (val >= 0) {
+            if (hist1 < 0x00008000 && hist1 + triOffset >= 0x00008000)
+                hist1 = 0x00007fff;
+            else
+                hist1 += triOffset;
+            if (hist1 >= 0x00010000)
+                hist1 -= 0x00010000;
+        }
+        else {
+            if (hist1 >= 0x00008000 && hist1 - triOffset < 0x00008000)
+                hist1 = 0x00008000;
+            else
+                hist1 -= triOffset;
+            if (hist1 < 0)
+                hist1 += 0x00010000;
+        }
+        outbuf[sample_count] = (sample_t)hist1;
+    }
+
+    stream->adpcm_history1_32 = hist1;
+}
+
 void decode_pcm16_int(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int big_endian) {
     int i, sample_count;
     int16_t (*read_16bit)(off_t,STREAMFILE*) = big_endian ? read_16bitBE : read_16bitLE;

@@ -68,6 +68,8 @@ typedef enum {
     /* PCM */
     coding_PCM16LE,         /* little endian 16-bit PCM */
     coding_PCM16BE,         /* big endian 16-bit PCM */
+    coding_PCM16BE_FUNK,    /* big endian 16-bit FUNK PCM */
+    coding_TRI_LIN_BE,      /* big endian 16-bit TRI_LIN */
     coding_PCM16_int,       /* 16-bit PCM with sample-level interleave (for blocks) */
 
     coding_PCM8,            /* 8-bit PCM */
@@ -237,6 +239,7 @@ typedef enum {
 
     /* headered blocks */
     layout_blocked_ast,
+    layout_blocked_funk,
     layout_blocked_halpst,
     layout_blocked_xa,
     layout_blocked_ea_schl,
@@ -310,6 +313,7 @@ typedef enum {
     meta_RSTM,              /* Nintendo RSTM (Revolution Stream, similar to STRM) */
     meta_AFC,               /* AFC */
     meta_AST,               /* AST */
+    meta_FUNK,              /* FUNK */
     meta_RWSD,              /* single-stream RWSD */
     meta_RWAR,              /* single-stream RWAR */
     meta_RWAV,              /* contents of RWAR */

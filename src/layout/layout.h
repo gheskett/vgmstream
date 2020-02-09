@@ -9,6 +9,7 @@ void render_vgmstream_blocked(sample_t * buffer, int32_t sample_count, VGMSTREAM
 void block_update(off_t block_offset, VGMSTREAM * vgmstream);
 
 void block_update_ast(off_t block_ofset, VGMSTREAM * vgmstream);
+void block_update_funk(off_t block_ofset, VGMSTREAM* vgmstream);
 void block_update_mxch(off_t block_ofset, VGMSTREAM * vgmstream);
 void block_update_halpst(off_t block_ofset, VGMSTREAM * vgmstream);
 void block_update_xa(off_t block_offset, VGMSTREAM * vgmstream);

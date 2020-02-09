@@ -306,6 +306,7 @@
     <ClCompile Include="meta\fsb5.c" />
     <ClCompile Include="meta\fsb5_fev.c" />
     <ClCompile Include="meta\fsb_encrypted.c" />
+    <ClCompile Include="meta\funk.c" />
     <ClCompile Include="meta\gca.c" />
     <ClCompile Include="meta\gcsw.c" />
     <ClCompile Include="meta\genh.c" />
@@ -598,6 +599,7 @@
     <ClCompile Include="coding\xmd_decoder.c" />
     <ClCompile Include="layout\segmented.c" />
     <ClCompile Include="layout\blocked_ast.c" />
+    <ClCompile Include="layout\blocked_funk.c" />
     <ClCompile Include="layout\blocked_bdsp.c" />
     <ClCompile Include="layout\blocked.c" />
     <ClCompile Include="layout\blocked_awc.c" />

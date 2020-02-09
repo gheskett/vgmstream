@@ -28,6 +28,7 @@ VGMSTREAM * (*init_vgmstream_functions[])(STREAMFILE *streamFile) = {
     init_vgmstream_rsf,
     init_vgmstream_afc,
     init_vgmstream_ast,
+    init_vgmstream_funk,
     init_vgmstream_halpst,
     init_vgmstream_rs03,
     init_vgmstream_ngc_dsp_std,
@@ -1061,6 +1062,7 @@ void render_vgmstream(sample_t * buffer, int32_t sample_count, VGMSTREAM * vgmst
             break;
         case layout_blocked_mxch:
         case layout_blocked_ast:
+        case layout_blocked_funk:
         case layout_blocked_halpst:
         case layout_blocked_xa:
         case layout_blocked_ea_schl:
@@ -1139,6 +1141,8 @@ int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
 
         case coding_PCM16LE:
         case coding_PCM16BE:
+        case coding_PCM16BE_FUNK:
+        case coding_TRI_LIN_BE:
         case coding_PCM16_int:
         case coding_PCM8:
         case coding_PCM8_int:
@@ -1336,6 +1340,8 @@ int get_vgmstream_frame_size(VGMSTREAM * vgmstream) {
 
         case coding_PCM16LE:
         case coding_PCM16BE:
+        case coding_PCM16BE_FUNK:
+        case coding_TRI_LIN_BE:
         case coding_PCM16_int:
             return 0x02;
         case coding_PCM8:
@@ -1540,10 +1546,16 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
             }
             break;
 
-        case coding_PCM16LE:
+        case coding_PCM16LE: case coding_PCM16BE_FUNK:
             for (ch = 0; ch < vgmstream->channels; ch++) {
-                decode_pcm16le(&vgmstream->ch[ch],buffer+samples_written*vgmstream->channels+ch,
-                        vgmstream->channels,vgmstream->samples_into_block,samples_to_do);
+                decode_pcm16be(&vgmstream->ch[ch], buffer + samples_written * vgmstream->channels + ch,
+                    vgmstream->channels, vgmstream->samples_into_block, samples_to_do);
+            }
+            break;
+        case coding_TRI_LIN_BE:
+            for (ch = 0; ch < vgmstream->channels; ch++) {
+                decode_tri_lin_be(&vgmstream->ch[ch], buffer + samples_written * vgmstream->channels + ch,
+                    vgmstream->channels, vgmstream->samples_into_block, samples_to_do, vgmstream->sample_rate);
             }
             break;
         case coding_PCM16BE:

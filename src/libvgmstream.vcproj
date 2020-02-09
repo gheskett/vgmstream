@@ -693,6 +693,10 @@
                     >
                 </File>
 				<File
+					RelativePath=".\meta\funk.c"
+					>
+				</File>
+				<File
 					RelativePath=".\meta\fwse.c"
 					>
 				</File>
@@ -2196,6 +2200,10 @@
 				</File>
 				<File
 					RelativePath=".\layout\blocked_ast.c"
+					>
+				</File>
+				<File
+					RelativePath=".\layout\blocked_funk.c"
 					>
 				</File>
 				<File

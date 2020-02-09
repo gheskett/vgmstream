@@ -172,6 +172,7 @@ static const char* extension_list[] = {
     "flx",
     "fsb",
     "fsv",
+    "funk",
     "fwav",
     "fwse",
 
@@ -648,6 +649,8 @@ typedef struct {
 static const coding_info coding_info_list[] = {
         {coding_PCM16LE,            "Little Endian 16-bit PCM"},
         {coding_PCM16BE,            "Big Endian 16-bit PCM"},
+        {coding_PCM16BE_FUNK,       "FUNKY Big Endian 16-bit PCM"},
+        {coding_TRI_LIN_BE,         "FUNKY Custom 1-bit Triangle Wave"},
         {coding_PCM16_int,          "16-bit PCM with 2 byte interleave (block)"},
         {coding_PCM8,               "8-bit signed PCM"},
         {coding_PCM8_int,           "8-bit signed PCM with 1 byte interleave (block)"},
@@ -798,6 +801,7 @@ static const layout_info layout_info_list[] = {
 
         {layout_blocked_mxch,           "blocked (MxCh)"},
         {layout_blocked_ast,            "blocked (AST)"},
+        {layout_blocked_funk,           "blocked (FUNK)"},
         {layout_blocked_halpst,         "blocked (HALPST)"},
         {layout_blocked_xa,             "blocked (XA)"},
         {layout_blocked_ea_schl,        "blocked (EA SCHl)"},
@@ -852,6 +856,7 @@ static const meta_info meta_info_list[] = {
         {meta_RSF,                  "Retro Studios RSF raw header"},
         {meta_AFC,                  "Nintendo .AFC header"},
         {meta_AST,                  "Nintendo AST header"},
+        {meta_FUNK,                 "Funky fresh header"},
         {meta_HALPST,               "HAL Laboratory HALPST header"},
         {meta_DSP_RS03,             "Retro Studios RS03 header"},
         {meta_DSP_STD,              "Nintendo DSP header"},

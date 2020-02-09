@@ -94,6 +94,9 @@ void block_update(off_t block_offset, VGMSTREAM * vgmstream) {
         case layout_blocked_ast:
             block_update_ast(block_offset,vgmstream);
             break;
+        case layout_blocked_funk:
+            block_update_funk(block_offset, vgmstream);
+            break;
         case layout_blocked_mxch:
             block_update_mxch(block_offset,vgmstream);
             break;
