@@ -635,6 +635,7 @@ This list is not complete and many other files are supported.
 	- .brstm (GC DSP ADPCM, 8/16 bit PCM)
 	- .emff (PSX APDCM, GC DSP ADPCM)
 	- .fsb/wii (PSX ADPCM, GC DSP ADPCM, Xbox IMA ADPCM, MPEG audio, FSB Vorbis, MS XMA)
+	- .funk (16 bit PCM, 1-bit Triangle Wave)
 	- .msf (PCM, PSX ADPCM, ATRAC3, MP3)
 	- .musx (PSX ADPCM, Xbox IMA ADPCM, DAT4 IMA ADPCM)
 	- .nwa (16 bit PCM, NWA DPCM)
