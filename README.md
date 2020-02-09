@@ -1,4 +1,9 @@
-# vgmstream
+# vgmstream (Funkify support)
+
+PULL FROM PUBLIC REPO:
+	`git remote add public https://github.com/losnoco/vgmstream # THIS CAN AND SHOULD BE IGNORED IF IT ALREADY EXISTS!`
+	`git pull public master # Creates a merge commit`
+	`git push origin master`
 
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/losnoco/vgmstream?branch=master&svg=true "Build Status")](https://ci.appveyor.com/project/kode54/vgmstream/branch/master/artifacts)
 
