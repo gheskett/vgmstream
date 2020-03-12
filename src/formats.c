@@ -199,6 +199,7 @@ static const char* extension_list[] = {
     "his",
     "hps",
     "hsf",
+    "hwx", //txth/reserved [Star Wars Episode III (Xbox)]
     "hx2",
     "hx3",
     "hxc",
@@ -297,6 +298,8 @@ static const char* extension_list[] = {
     "mihb",
     "mnstr",
     "mogg",
+    //"m4a", //common
+    //"m4v", //common
     //"mp+", //common [Moonshine Runners (PC)]
     //"mp2", //common
     //"mp3", //common
@@ -398,6 +401,7 @@ static const char* extension_list[] = {
     "s3v", //txth/reserved [Sound Voltex 5 (AC)]
     "sab",
     "sad",
+    "saf",
     "sap",
     "sb0",
     "sb1",
@@ -513,6 +517,7 @@ static const char* extension_list[] = {
     "vgm", //txth/reserved [Maximo (PS2)]
     "vgs",
     "vgv",
+    "vid",
     "vig",
     "vis",
     "vms",
@@ -564,6 +569,7 @@ static const char* extension_list[] = {
     "xag",
     "xau",
     "xav",
+    "xb", //txth/reserved [Scooby-Doo! Unmasked (Xbox)]
     "xen",
     "xma",
     "xma2",
@@ -606,6 +612,8 @@ static const char* common_extension_list[] = {
     "aiff", //common
     "bin", //common
     "flac", //common
+    "m4a", //common
+    "m4v", //common
     "mp+", //common [Moonshine Runners (PC)]
     "mp2", //common
     "mp3", //common
@@ -758,7 +766,7 @@ static const coding_info coding_info_list[] = {
         {coding_UBI_ADPCM,          "Ubisoft 4/6-bit ADPCM"},
 
         {coding_EA_MT,              "Electronic Arts MicroTalk"},
-
+        {coding_CIRCUS_VQ,          "Circus VQ"},
         {coding_RELIC,              "Relic Codec"},
         {coding_CRI_HCA,            "CRI HCA"},
         
@@ -790,6 +798,9 @@ static const coding_info coding_info_list[] = {
 #endif
 #ifdef VGM_USE_FFMPEG
         {coding_FFmpeg,             "FFmpeg"},
+#endif
+#ifdef VGM_USE_FDKAAC
+		{coding_MP4_AAC,            "MPEG-4 AAC"},
 #endif
 };
 
@@ -839,6 +850,7 @@ static const layout_info layout_info_list[] = {
         {layout_blocked_h4m,            "blocked (H4M)"},
         {layout_blocked_xa_aiff,        "blocked (XA AIFF)"},
         {layout_blocked_vs_square,      "blocked (Square VS)"},
+        {layout_blocked_vid1,           "blocked (VID1)"},
 };
 
 static const meta_info meta_info_list[] = {
@@ -1170,7 +1182,7 @@ static const meta_info meta_info_list[] = {
         {meta_VXN,                  "Gameloft VXN header"},
         {meta_EA_SNR_SNS,           "Electronic Arts SNR+SNS header"},
         {meta_EA_SPS,               "Electronic Arts SPS header"},
-        {meta_NGC_VID1,             "Neversoft VID1 header"},
+        {meta_VID1,                 "Factor 5 VID1 header"},
         {meta_PC_FLX,               "Ultima IX .FLX header"},
         {meta_MOGG,                 "Harmonix Music Systems MOGG Vorbis"},
         {meta_OGG_VORBIS,           "Ogg Vorbis header"},
