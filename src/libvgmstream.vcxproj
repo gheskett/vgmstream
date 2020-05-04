@@ -122,6 +122,7 @@
     <ClInclude Include="meta\xnb_streamfile.h" />
     <ClInclude Include="meta\xnb_lz4mg.h" />
     <ClInclude Include="meta\mta2_streamfile.h" />
+    <ClInclude Include="meta\mul_streamfile.h" />
     <ClInclude Include="meta\mzrt_streamfile.h" />
     <ClInclude Include="meta\nus3bank_streamfile.h" />
     <ClInclude Include="meta\ogg_vorbis_streamfile.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="layout\blocked_vs_str.c" />
     <ClCompile Include="layout\layered.c" />
     <ClCompile Include="layout\blocked_tra.c" />
+    <ClCompile Include="layout\blocked_ubi_sce.c" />
     <ClCompile Include="meta\akb.c" />
     <ClCompile Include="meta\awb.c" />
     <ClCompile Include="meta\awc.c" />
@@ -186,6 +188,7 @@
     <ClCompile Include="meta\g1l.c" />
     <ClCompile Include="meta\ima.c" />
     <ClCompile Include="meta\imc.c" />
+    <ClCompile Include="meta\imuse.c" />
     <ClCompile Include="meta\ios_psnd.c" />
     <ClCompile Include="meta\ktss.c" />
     <ClCompile Include="meta\kwb.c" />
@@ -299,6 +302,7 @@
     <ClCompile Include="meta\dc_str.c" />
     <ClCompile Include="meta\dec.c" />
     <ClCompile Include="meta\derf.c" />
+    <ClCompile Include="meta\diva.c" />
     <ClCompile Include="meta\dmsg_segh.c" />
     <ClCompile Include="meta\dsf.c" />
     <ClCompile Include="meta\dsp_adx.c" />
@@ -309,6 +313,7 @@
     <ClCompile Include="meta\ea_eaac.c" />
     <ClCompile Include="meta\ea_wve_au00.c" />
     <ClCompile Include="meta\ea_wve_ad10.c" />
+    <ClCompile Include="meta\encrypted.c" />
     <ClCompile Include="meta\mul.c" />
     <ClCompile Include="meta\exakt_sc.c" />
     <ClCompile Include="meta\ffw.c" />
@@ -575,6 +580,7 @@
     <ClCompile Include="coding\g7221_decoder_lib.c" />
     <ClCompile Include="coding\hca_decoder.c" />
     <ClCompile Include="coding\ima_decoder.c" />
+    <ClCompile Include="coding\imuse_decoder.c" />
     <ClCompile Include="coding\l5_555_decoder.c" />
     <ClCompile Include="coding\mc3_decoder.c" />
     <ClCompile Include="coding\mpeg_custom_utils.c" />
@@ -600,6 +606,7 @@
     <ClCompile Include="coding\sassc_decoder.c" />
     <ClCompile Include="coding\sdx2_decoder.c" />
     <ClCompile Include="coding\ubi_adpcm_decoder.c" />
+    <ClCompile Include="coding\vadpcm_decoder.c" />
     <ClCompile Include="coding\vorbis_custom_decoder.c" />
     <ClCompile Include="coding\vorbis_custom_utils_fsb.c" />
     <ClCompile Include="coding\vorbis_custom_utils_ogl.c" />

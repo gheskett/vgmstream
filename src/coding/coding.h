@@ -35,7 +35,7 @@ void decode_apple_ima4(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channel
 void decode_fsb_ima(VGMSTREAM * vgmstream, VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
 void decode_wwise_ima(VGMSTREAM * vgmstream, VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
 void decode_awc_ima(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
-void decode_ubi_ima(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
+void decode_ubi_ima(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel, int codec_config);
 void decode_h4m_ima(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel, uint16_t frame_format);
 size_t ima_bytes_to_samples(size_t bytes, int channels);
 size_t ms_ima_bytes_to_samples(size_t bytes, int block_align, int channels);
@@ -60,6 +60,11 @@ void decode_ngc_dtk(VGMSTREAMCHANNEL *stream, sample_t *outbuf, int channelspaci
 
 /* ngc_afc_decoder */
 void decode_ngc_afc(VGMSTREAMCHANNEL *stream, sample_t *outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
+
+/* vadpcm_decoder */
+void decode_vadpcm(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int order);
+//int32_t vadpcm_bytes_to_samples(size_t bytes, int channels);
+void vadpcm_read_coefs_be(VGMSTREAM* vgmstream, STREAMFILE* sf, off_t offset, int order, int entries, int ch);
 
 /* pcm_decoder */
 void decode_pcm16le(VGMSTREAMCHANNEL * stream, sample_t * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
@@ -168,6 +173,7 @@ void decode_fadpcm(VGMSTREAMCHANNEL *stream, sample_t *outbuf, int channelspacin
 
 /* asf_decoder */
 void decode_asf(VGMSTREAMCHANNEL *stream, sample_t *outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
+int32_t asf_bytes_to_samples(size_t bytes, int channels);
 
 /* dsa_decoder */
 void decode_dsa(VGMSTREAMCHANNEL *stream, sample_t *outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
@@ -204,6 +210,14 @@ void reset_ubi_adpcm(ubi_adpcm_codec_data *data);
 void seek_ubi_adpcm(ubi_adpcm_codec_data *data, int32_t num_sample);
 void free_ubi_adpcm(ubi_adpcm_codec_data *data);
 int ubi_adpcm_get_samples(ubi_adpcm_codec_data *data);
+
+/* imuse_decoder */
+typedef struct imuse_codec_data imuse_codec_data;
+imuse_codec_data *init_imuse(STREAMFILE* sf, int channels);
+void decode_imuse(VGMSTREAM* vgmstream, sample_t* outbuf, int32_t samples_to_do);
+void reset_imuse(imuse_codec_data* data);
+void seek_imuse(imuse_codec_data* data, int32_t num_sample);
+void free_imuse(imuse_codec_data* data);
 
 /* ea_mt_decoder*/
 ea_mt_codec_data *init_ea_mt(int channels, int type);

@@ -71,6 +71,7 @@ typedef struct {
     int disable_subsongs;
     int downmix_channels;
     int tagfile_disable;
+    int force_title;
     int exts_unknown_on;
     int exts_common_on;
 
@@ -247,6 +248,11 @@ static STREAMFILE *wasf_open(WINAMP_STREAMFILE *streamFile, const char *const fi
     if (!filename)
         return NULL;
 
+#if !defined (__ANDROID__) && !defined (_MSC_VER)
+    /* When enabling this for MSVC it'll seemingly work, but there are issues possibly related to underlying
+     * IO buffers when using dup(), noticeable by re-opening the same streamfile with small buffer sizes
+     * (reads garbage). This reportedly causes issues in Android too */
+
     streamFile->stdiosf->get_name(streamFile->stdiosf, name, PATH_LIMIT);
     /* if same name, duplicate the file descriptor we already have open */ //unsure if all this is needed
     if (streamFile->infile_ref && !strcmp(name,filename)) {
@@ -264,6 +270,7 @@ static STREAMFILE *wasf_open(WINAMP_STREAMFILE *streamFile, const char *const fi
 
         /* on failure just close and try the default path (which will probably fail a second time) */
     }
+#endif
 
     /* STREAMFILEs carry char/UTF8 names, convert to wchar for Winamp */
     wa_char_to_ichar(wpath,PATH_LIMIT, filename);
@@ -392,6 +399,7 @@ static void cfg_char_to_wchar(TCHAR *wdst, size_t wdstsize, const char *src) {
 #define INI_DISABLE_SUBSONGS    TEXT("disable_subsongs")
 #define INI_DOWNMIX_CHANNELS    TEXT("downmix_channels")
 #define INI_TAGFILE_DISABLE     TEXT("tagfile_disable")
+#define INI_FORCE_TITLE         TEXT("force_title")
 #define INI_EXTS_UNKNOWN_ON     TEXT("exts_unknown_on")
 #define INI_EXTS_COMMON_ON      TEXT("exts_common_on")
 #define INI_GAIN_TYPE           TEXT("gain_type")
@@ -497,6 +505,7 @@ static void load_defaults(winamp_settings_t *defaults) {
     defaults->disable_subsongs = 0;
     defaults->downmix_channels = 0;
     defaults->tagfile_disable = 0;
+    defaults->force_title = 0;
     defaults->exts_unknown_on = 0;
     defaults->exts_common_on = 0;
     defaults->gain_type = 1;
@@ -520,6 +529,7 @@ static void load_config(winamp_settings_t *settings, winamp_settings_t *defaults
     ini_get_b(inifile, INI_DISABLE_SUBSONGS, defaults->disable_subsongs, &settings->disable_subsongs);
     ini_get_i(inifile, INI_DOWNMIX_CHANNELS, defaults->downmix_channels, &settings->downmix_channels, 0, 64);
     ini_get_b(inifile, INI_TAGFILE_DISABLE, defaults->tagfile_disable, &settings->tagfile_disable);
+    ini_get_b(inifile, INI_FORCE_TITLE, defaults->force_title, &settings->force_title);
     ini_get_b(inifile, INI_EXTS_UNKNOWN_ON, defaults->exts_unknown_on, &settings->exts_unknown_on);
     ini_get_b(inifile, INI_EXTS_COMMON_ON, defaults->exts_common_on, &settings->exts_common_on);
 
@@ -547,6 +557,7 @@ static void save_config(winamp_settings_t *settings) {
     ini_set_b(inifile, INI_DISABLE_SUBSONGS, settings->disable_subsongs);
     ini_set_i(inifile, INI_DOWNMIX_CHANNELS, settings->downmix_channels);
     ini_set_b(inifile, INI_TAGFILE_DISABLE, settings->tagfile_disable);
+    ini_set_b(inifile, INI_FORCE_TITLE, settings->force_title);
     ini_set_b(inifile, INI_EXTS_UNKNOWN_ON, settings->exts_unknown_on);
     ini_set_b(inifile, INI_EXTS_COMMON_ON, settings->exts_common_on);
 
@@ -628,6 +639,7 @@ static int dlg_load_form(HWND hDlg, winamp_settings_t *settings) {
     dlg_check_get(hDlg, IDC_DISABLE_SUBSONGS, &settings->disable_subsongs);
     dlg_input_get_i(hDlg, IDC_DOWNMIX_CHANNELS, &settings->downmix_channels, TEXT("Downmix must be a positive integer number"), &err);
     dlg_check_get(hDlg, IDC_TAGFILE_DISABLE, &settings->tagfile_disable);
+    dlg_check_get(hDlg, IDC_FORCE_TITLE, &settings->force_title);
     dlg_check_get(hDlg, IDC_EXTS_UNKNOWN_ON, &settings->exts_unknown_on);
     dlg_check_get(hDlg, IDC_EXTS_COMMON_ON, &settings->exts_common_on);
 
@@ -651,6 +663,7 @@ static void dlg_save_form(HWND hDlg, winamp_settings_t *settings, int reset) {
     dlg_check_set(hDlg, IDC_DISABLE_SUBSONGS, settings->disable_subsongs);
     dlg_input_set_i(hDlg, IDC_DOWNMIX_CHANNELS, settings->downmix_channels);
     dlg_check_set(hDlg, IDC_TAGFILE_DISABLE, settings->tagfile_disable);
+    dlg_check_set(hDlg, IDC_FORCE_TITLE, settings->force_title);
     dlg_check_set(hDlg, IDC_EXTS_UNKNOWN_ON, settings->exts_unknown_on);
     dlg_check_set(hDlg, IDC_EXTS_COMMON_ON, settings->exts_common_on);
 
@@ -912,7 +925,7 @@ static void get_title(in_char * dst, int dst_size, const in_char * fn, VGMSTREAM
         }
 
         /* show name if file has subsongs (implicitly shows also for TXTP) */
-        if (info_name[0] != '\0' && ((info_streams > 0 && !is_first) || info_streams == 1)) {
+        if (info_name[0] != '\0' && ((info_streams > 0 && !is_first) || info_streams == 1 || settings.force_title)) {
             in_char stream_name[PATH_LIMIT];
             wa_char_to_ichar(stream_name, PATH_LIMIT, info_name);
             wa_snprintf(buffer,PATH_LIMIT, wa_L(" (%s)"), stream_name);
@@ -978,29 +991,46 @@ static void apply_config(VGMSTREAM * vgmstream, winamp_song_config *current) {
 static int winampGetExtendedFileInfo_common(in_char* filename, char *metadata, char* ret, int retlen);
 
 static double get_album_gain_volume(const in_char *fn) {
-    char replaygain_gain[64], replaygain_peak[64];
+    char replaygain[64];
     double gain = 0.0;
     int had_replaygain = 0;
-    if (settings.gain_type != REPLAYGAIN_NONE) {
-        if (settings.gain_type == REPLAYGAIN_ALBUM && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_album_gain", replaygain_gain, sizeof(replaygain_gain))) {
-            gain = atof(replaygain_gain);
-            had_replaygain = 1;
-        }
-        if (!had_replaygain && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_track_gain", replaygain_gain, sizeof(replaygain_gain))) {
-            gain = atof(replaygain_gain);
-            had_replaygain = 1;
-        }
-        if (had_replaygain) {
-            double vol = pow(10.0, gain / 20.0), peak = 1.0;
-            if (settings.clip_type == REPLAYGAIN_ALBUM && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_album_peak", replaygain_peak, sizeof(replaygain_peak))) {
-                peak = atof(replaygain_peak);
-            }
-            else if (settings.clip_type != REPLAYGAIN_NONE && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_track_peak", replaygain_peak, sizeof(replaygain_peak))) {
-                peak = atof(replaygain_peak);
-            }
-            return peak != 1.0 ? min(vol, 1.0 / peak) : vol;
-        }
+    if (settings.gain_type == REPLAYGAIN_NONE)
+        return 1.0;
+
+    replaygain[0] = '\0'; /* reset each time to make sure we read actual tags */
+    if (settings.gain_type == REPLAYGAIN_ALBUM
+            && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_album_gain", replaygain, sizeof(replaygain))
+            && replaygain[0] != '\0') {
+        gain = atof(replaygain);
+        had_replaygain = 1;
     }
+
+    replaygain[0] = '\0';
+    if (!had_replaygain
+            && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_track_gain", replaygain, sizeof(replaygain))
+            && replaygain[0] != '\0') {
+        gain = atof(replaygain);
+        had_replaygain = 1;
+    }
+
+    if (had_replaygain) {
+        double vol = pow(10.0, gain / 20.0);
+        double peak = 1.0;
+
+        replaygain[0] = '\0';
+        if (settings.clip_type == REPLAYGAIN_ALBUM
+                && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_album_peak", replaygain, sizeof(replaygain))
+                && replaygain[0] != '\0') {
+            peak = atof(replaygain);
+        }
+        else if (settings.clip_type != REPLAYGAIN_NONE
+                && winampGetExtendedFileInfo_common((in_char *)fn, "replaygain_track_peak", replaygain, sizeof(replaygain))
+                && replaygain[0] != '\0') {
+            peak = atof(replaygain);
+        }
+        return peak != 1.0 ? min(vol, 1.0 / peak) : vol;
+    }
+
     return 1.0;
 }
 
@@ -1648,6 +1678,8 @@ static int winampGetExtendedFileInfo_common(in_char* filename, char *metadata, c
     return 1;
 
 fail:
+    //TODO: is this always needed for Winamp to use replaygain?
+    //strcpy(ret, "1.0"); //should set some default value?
     return strcasecmp(metadata, "replaygain_track_gain") == 0 ? 1 : 0;
 }
 

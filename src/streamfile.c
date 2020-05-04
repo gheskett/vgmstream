@@ -77,7 +77,8 @@ static size_t read_stdio(STDIO_STREAMFILE *streamfile, uint8_t *dst, off_t offse
         /* Workaround a bug that appears when compiling with MSVC (later versions).
          * This bug is deterministic and seemingly appears randomly after seeking.
          * It results in fread returning data from the wrong area of the file.
-         * HPS is one format that is almost always affected by this. */
+         * HPS is one format that is almost always affected by this.
+         * May be related/same as open_stdio's bug when using dup() */
         fseek(streamfile->infile, ftell(streamfile->infile), SEEK_SET);
 #endif
 
@@ -132,7 +133,12 @@ static STREAMFILE* open_stdio(STDIO_STREAMFILE *streamfile, const char * const f
     if (!filename)
         return NULL;
 
-#if !defined (__ANDROID__)
+#if !defined (__ANDROID__) && !defined (_MSC_VER)
+    /* when enabling this for MSVC it'll seemingly work, but there are issues possibly related to underlying
+     * IO buffers when using dup(), noticeable by re-opening the same streamfile with small buffer sizes
+     * (reads garbage). fseek bug in line 81 may be related/same thing and may be removed.
+     * this reportedly this causes issues in Android too */
+
     /* if same name, duplicate the file descriptor we already have open */
     if (streamfile->infile && !strcmp(streamfile->name,filename)) {
         int new_fd;
@@ -1007,11 +1013,14 @@ fail:
     if (buf) buf[0] = '\0';
     return 0;
 }
-size_t read_string_utf16le(char *buf, size_t buf_size, off_t offset, STREAMFILE *sf) {
+
+size_t read_string_utf16(char *buf, size_t buf_size, off_t offset, STREAMFILE *sf, int big_endian) {
     size_t pos, offpos;
+    uint16_t (*read_u16)(off_t,STREAMFILE*) = big_endian ? read_u16be : read_u16le;
+
 
     for (pos = 0, offpos = 0; pos < buf_size; pos++, offpos += 2) {
-        char c = read_u16le(offset + offpos, sf) & 0xFF; /* lower byte for now */
+        char c = read_u16(offset + offpos, sf) & 0xFF; /* lower byte for now */
         if (buf) buf[pos] = c;
         if (c == '\0')
             return pos;
@@ -1026,6 +1035,13 @@ size_t read_string_utf16le(char *buf, size_t buf_size, off_t offset, STREAMFILE 
 fail:
     if (buf) buf[0] = '\0';
     return 0;
+}
+
+size_t read_string_utf16le(char* buf, size_t buf_size, off_t offset, STREAMFILE* sf) {
+    return read_string_utf16(buf, buf_size, offset, sf, 0);
+}
+size_t read_string_utf16be(char* buf, size_t buf_size, off_t offset, STREAMFILE* sf) {
+    return read_string_utf16(buf, buf_size, offset, sf, 1);
 }
 
 
