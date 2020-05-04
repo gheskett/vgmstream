@@ -1559,9 +1559,9 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
             }
             break;
 
-        case coding_PCM16LE: case coding_PCM16BE_FUNK:
+        case coding_PCM16LE:
             for (ch = 0; ch < vgmstream->channels; ch++) {
-                decode_pcm16be(&vgmstream->ch[ch], buffer + samples_written * vgmstream->channels + ch,
+                decode_pcm16le(&vgmstream->ch[ch], buffer + samples_written * vgmstream->channels + ch,
                     vgmstream->channels, vgmstream->samples_into_block, samples_to_do);
             }
             break;
@@ -1571,7 +1571,7 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
                     vgmstream->channels, vgmstream->samples_into_block, samples_to_do, vgmstream->sample_rate);
             }
             break;
-        case coding_PCM16BE:
+        case coding_PCM16BE: case coding_PCM16BE_FUNK:
             for (ch = 0; ch < vgmstream->channels; ch++) {
                 decode_pcm16be(&vgmstream->ch[ch],buffer+samples_written*vgmstream->channels+ch,
                         vgmstream->channels,vgmstream->samples_into_block,samples_to_do);
