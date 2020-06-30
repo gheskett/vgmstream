@@ -106,6 +106,7 @@ static const char* extension_list[] = {
     "bik2",
     //"bin", //common
     "bk2",
+    "blk",
     "bmdx",
     "bms",
     "bnk",
@@ -137,6 +138,7 @@ static const char* extension_list[] = {
     "cxs",
 
     "da",
+    "dat",
     "data",
     "dax",
     "dbm",
@@ -238,6 +240,7 @@ static const char* extension_list[] = {
     "joe",
     "jstm",
 
+    "kat",
     "kces",
     "kcey", //fake extension/header id for .pcm (renamed, to be removed)
     "khv", //fake extension/header id for .vas (renamed, to be removed)
@@ -245,6 +248,7 @@ static const char* extension_list[] = {
     "kovs", //fake extension/header id for .kvs
     "kns",
     "kraw",
+    "ktsl2asbin",
     "ktss", //fake extension/header id for .kns
     "kvs",
 
@@ -323,6 +327,7 @@ static const char* extension_list[] = {
     "mta2",
     "mtaf",
     "mul",
+    "mups",
     "mus",
     "musc",
     "musx",
@@ -1036,7 +1041,7 @@ static const meta_info meta_info_list[] = {
         {meta_RIFF_WAVE_MWV,        "RIFF WAVE header with .mwv flavoring"},
         {meta_FFCC_STR,             "Final Fantasy: Crystal Chronicles STR header"},
         {meta_SAT_BAKA,             "BAKA header from Crypt Killer"},
-        {meta_NDS_SWAV,             "SWAV Header"},
+        {meta_SWAV,                 "Gameloft SWAV header"},
         {meta_VSF,                  "Square-Enix VSF header"},
         {meta_NDS_RRDS,             "Ridger Racer DS Header"},
         {meta_PS2_TK5,              "Tekken 5 Stream Header"},
@@ -1146,7 +1151,7 @@ static const meta_info meta_info_list[] = {
         {meta_CSTM,                 "Nintendo CSTM Header"},
         {meta_FSTM,                 "Nintendo FSTM Header"},
         {meta_KT_WIIBGM,            "Koei Tecmo WiiBGM Header"},
-        {meta_KTSS,                 "Koei Tecmo Nintendo Stream KTSS Header"},
+        {meta_KTSS,                 "Koei Tecmo KTSS header"},
         {meta_IDSP_NAMCO,           "Namco IDSP header"},
         {meta_WIIU_BTSND,           "Nintendo Wii U Menu Boot Sound"},
         {meta_MCA,                  "Capcom MCA header"},
@@ -1223,7 +1228,7 @@ static const meta_info meta_info_list[] = {
         {meta_UBI_BAO,              "Ubisoft BAO header"},
         {meta_DSP_SWITCH_AUDIO,     "UE4 Switch Audio header"},
         {meta_TA_AAC_VITA,          "tri-Ace AAC (Vita) header"},
-        {meta_DSP_SADF,             "Procyon Studio SADF header"},
+        {meta_SADF,                 "Procyon Studio SADF header"},
         {meta_H4M,                  "Hudson HVQM4 header"},
         {meta_ASF,                  "Argonaut ASF header"},
         {meta_XMD,                  "Konami XMD header"},
@@ -1297,7 +1302,9 @@ static const meta_info meta_info_list[] = {
         {meta_WWISE_FX,             "Audiokinetic Wwise FX header"},
         {meta_DIVA,                 "DIVA header"},
         {meta_IMUSE,                "LucasArts iMUSE header"},
-
+        {meta_KTSR,                 "Koei Tecmo KTSR header"},
+        {meta_KAT,                  "Sega KAT header"},
+        {meta_PCM_SUCCESS,          "Success PCM header"},
 };
 
 void get_vgmstream_coding_description(VGMSTREAM *vgmstream, char *out, size_t out_size) {
