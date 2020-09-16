@@ -84,7 +84,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\ext_includes\clHCA.h" />
+    <ClInclude Include="coding\mpeg_bitreader.h" />
     <ClInclude Include="coding\mpeg_decoder.h" />
+    <ClInclude Include="coding\vorbis_bitreader.h" />
     <ClInclude Include="coding\vorbis_custom_data_fsb.h" />
     <ClInclude Include="coding\vorbis_custom_data_wwise.h" />
     <ClInclude Include="coding\vorbis_custom_decoder.h" />
@@ -92,6 +94,8 @@
     <ClInclude Include="meta\xwb_xsb.h" />
     <ClInclude Include="meta\xwma_konami_streamfile.h" />
     <ClInclude Include="meta\zsnd_streamfile.h" />
+    <ClInclude Include="decode.h" />
+    <ClInclude Include="render.h" />
     <ClInclude Include="mixing.h" />
     <ClInclude Include="plugins.h" />
     <ClInclude Include="streamfile.h" />
@@ -129,6 +133,7 @@
     <ClInclude Include="meta\nus3bank_streamfile.h" />
     <ClInclude Include="meta\ogg_vorbis_streamfile.h" />
     <ClInclude Include="meta\opus_interleave_streamfile.h" />
+    <ClInclude Include="meta\sab_streamfile.h" />
     <ClInclude Include="meta\riff_ogg_streamfile.h" />
     <ClInclude Include="meta\sfh_streamfile.h" />
     <ClInclude Include="meta\sqex_scd_streamfile.h" />
@@ -193,6 +198,7 @@
     <ClCompile Include="meta\imuse.c" />
     <ClCompile Include="meta\ios_psnd.c" />
     <ClCompile Include="meta\kat.c" />
+    <ClCompile Include="meta\ktsc.c" />
     <ClCompile Include="meta\ktsr.c" />
     <ClCompile Include="meta\ktss.c" />
     <ClCompile Include="meta\kwb.c" />
@@ -227,6 +233,7 @@
     <ClCompile Include="meta\ps3_past.c" />
     <ClCompile Include="meta\psf.c" />
     <ClCompile Include="meta\sgxd.c" />
+    <ClCompile Include="meta\silence.c" />
     <ClCompile Include="meta\sk_aud.c" />
     <ClCompile Include="meta\vawx.c" />
     <ClCompile Include="meta\seg.c" />
@@ -245,6 +252,8 @@
     <ClCompile Include="meta\x360_tra.c" />
     <ClCompile Include="formats.c" />
     <ClCompile Include="meta\xmv_valve.c" />
+    <ClCompile Include="decode.c" />
+    <ClCompile Include="render.c" />
     <ClCompile Include="mixing.c" />
     <ClCompile Include="plugins.c" />
     <ClCompile Include="meta\ps2_va3.c" />
@@ -270,6 +279,7 @@
     <ClCompile Include="meta\aax.c" />
     <ClCompile Include="meta\acb.c" />
     <ClCompile Include="meta\acm.c" />
+    <ClCompile Include="meta\adp_konami.c" />
     <ClCompile Include="meta\adpcm_capcom.c" />
     <ClCompile Include="meta\ads.c" />
     <ClCompile Include="meta\adx.c" />
@@ -292,6 +302,7 @@
     <ClCompile Include="meta\bnsf.c" />
     <ClCompile Include="meta\brstm.c" />
     <ClCompile Include="meta\btsnd.c" />
+    <ClCompile Include="meta\bsf.c" />
     <ClCompile Include="meta\capdsp.c" />
     <ClCompile Include="meta\ck.c" />
     <ClCompile Include="meta\cri_utf.c" />
@@ -308,6 +319,7 @@
     <ClCompile Include="meta\derf.c" />
     <ClCompile Include="meta\diva.c" />
     <ClCompile Include="meta\dmsg_segh.c" />
+    <ClCompile Include="meta\dsb.c" />
     <ClCompile Include="meta\dsf.c" />
     <ClCompile Include="meta\dsp_adx.c" />
     <ClCompile Include="meta\dsp_bdsp.c" />
@@ -454,8 +466,8 @@
     <ClCompile Include="meta\ps2_snd.c" />
     <ClCompile Include="meta\ps2_sps.c" />
     <ClCompile Include="meta\ps2_ster.c" />
-    <ClCompile Include="meta\ps2_svag.c" />
-    <ClCompile Include="meta\ps2_svag_snk.c" />
+    <ClCompile Include="meta\svag_kcet.c" />
+    <ClCompile Include="meta\svag_snk.c" />
     <ClCompile Include="meta\ps2_tec.c" />
     <ClCompile Include="meta\ps2_tk5.c" />
     <ClCompile Include="meta\vag.c" />
@@ -568,6 +580,7 @@
     <ClCompile Include="meta\zsd.c" />
     <ClCompile Include="meta\zsnd.c" />
     <ClCompile Include="meta\zwdsp.c" />
+    <ClCompile Include="meta\zwv.c" />
     <ClCompile Include="coding\acm_decoder.c" />
     <ClCompile Include="coding\acm_decoder_decode.c" />
     <ClCompile Include="coding\acm_decoder_util.c" />
