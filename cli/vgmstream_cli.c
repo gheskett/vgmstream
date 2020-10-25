@@ -21,6 +21,10 @@
 #define VERSION "(unknown version)"
 #endif
 
+#ifdef HAVE_JSON
+#include "jansson.h"
+#endif
+
 /* low values are ok as there is very little performance difference, but higher
  * may improve write I/O in some systems as this*channels doubles as output buffer */
 #define SAMPLE_BUFFER_SIZE  32768
@@ -56,6 +60,10 @@ static void usage(const char* name, int is_full) {
             "    -g: decode and print oggenc command line to encode as OGG\n"
             "    -b: decode and print batch variable commands\n"
             "    -h: print extra commands (for testing)\n"
+#ifdef HAVE_JSON
+            "    -V: print version info and supported extensions as JSON\n"
+            "    -I: print requested file info as JSON\n"
+#endif
             , name);
     if (!is_full)
         return;
@@ -81,6 +89,9 @@ typedef struct {
     int play_sdtout;
     int play_wreckless;
     int print_metaonly;
+#ifdef HAVE_JSON
+    int print_metajson;
+#endif
     int print_adxencd;
     int print_oggenc;
     int print_batchvar;
@@ -108,6 +119,10 @@ typedef struct {
     int lwav_loop_start;
     int lwav_loop_end;
 } cli_config;
+#ifdef HAVE_JSON
+static void print_json_version();
+static void print_json_info(VGMSTREAM* vgm, cli_config* cfg);
+#endif
 
 
 static int parse_config(cli_config* cfg, int argc, char** argv) {
@@ -124,7 +139,11 @@ static int parse_config(cli_config* cfg, int argc, char** argv) {
     opterr = 0;
 
     /* read config */
-    while ((opt = getopt(argc, argv, "o:l:f:d:ipPcmxeLEFrgb2:s:t:Tk:K:hOvD:")) != -1) {
+    while ((opt = getopt(argc, argv, "o:l:f:d:ipPcmxeLEFrgb2:s:t:Tk:K:hOvD:"
+#ifdef HAVE_JSON
+        "VI"
+#endif
+    )) != -1) {
         switch (opt) {
             case 'o':
                 cfg->outfilename = optarg;
@@ -208,6 +227,15 @@ static int parse_config(cli_config* cfg, int argc, char** argv) {
             case 'h':
                 usage(argv[0], 1);
                 goto fail;
+#ifdef HAVE_JSON
+            case 'V':
+                print_json_version();
+                goto fail;
+            case 'I':
+                cfg->print_metaonly = 1;
+                cfg->print_metajson = 1;
+                break;
+#endif
             case '?':
                 fprintf(stderr, "Unknown option -%c found\n", optopt);
                 goto fail;
@@ -366,6 +394,43 @@ static void print_title(VGMSTREAM* vgmstream, cli_config* cfg) {
 
     printf("title: %s\n", title);
 }
+
+#ifdef HAVE_JSON
+void print_json_version() {
+    size_t extension_list_len;
+    size_t common_extension_list_len;
+    const char** extension_list;
+    const char** common_extension_list;
+    extension_list = vgmstream_get_formats(&extension_list_len);
+    common_extension_list = vgmstream_get_common_formats(&common_extension_list_len);
+
+    json_t* ext_list = json_array();
+    json_t* cext_list = json_array();
+
+    for (size_t i = 0; i < extension_list_len; ++i) {
+        json_t* ext = json_string(extension_list[i]);
+        json_array_append(ext_list, ext);
+    }
+
+    for (size_t i = 0; i < common_extension_list_len; ++i) {
+        json_t* cext = json_string(common_extension_list[i]);
+        json_array_append(cext_list, cext);
+    }
+
+    json_t* version_string = json_string(VERSION);
+
+    json_t* final_object = json_object();
+    json_object_set(final_object, "version", version_string);
+    json_decref(version_string);
+
+    json_object_set(final_object, "extensions",
+                    json_pack("{soso}",
+                              "vgm", ext_list,
+                              "common", cext_list));
+
+    json_dumpf(final_object, stdout, JSON_COMPACT);
+}
+#endif
 
 static void clean_filename(char* dst, int clean_paths) {
     int i;
@@ -582,9 +647,18 @@ int main(int argc, char** argv) {
 
 
     /* prints */
-    print_info(vgmstream, &cfg);
-    print_tags(&cfg);
-    print_title(vgmstream, &cfg);
+#ifdef HAVE_JSON
+    if (!cfg.print_metajson) {
+#endif
+        print_info(vgmstream, &cfg);
+        print_tags(&cfg);
+        print_title(vgmstream, &cfg);
+#ifdef HAVE_JSON
+    }
+    else {
+        print_json_info(vgmstream, &cfg);
+    }
+#endif
 
     /* prints done */
     if (cfg.print_metaonly) {
@@ -596,7 +670,8 @@ int main(int argc, char** argv) {
         return EXIT_SUCCESS;
     }
 
-
+    if (cfg.seek_samples1 < -1) /* ex value for loop testing */
+        cfg.seek_samples1 = vgmstream->loop_start_sample;
     if (cfg.seek_samples1 >= len_samples)
         cfg.seek_samples1 = -1;
     if (cfg.seek_samples2 >= len_samples)
@@ -751,7 +826,80 @@ fail:
     return EXIT_FAILURE;
 }
 
+#ifdef HAVE_JSON
+static void print_json_info(VGMSTREAM* vgm, cli_config* cfg) {
+    json_t* version_string = json_string(VERSION);
+    vgmstream_info info;
+    describe_vgmstream_info(vgm, &info);
 
+    json_t* mixing_info = NULL;
+
+    // The JSON pack format string is defined here: https://jansson.readthedocs.io/en/latest/apiref.html#building-values
+
+    if (info.mixing_info.input_channels > 0) {
+        mixing_info = json_pack("{sisi}",
+            "inputChannels", info.mixing_info.input_channels,
+            "outputChannels", info.mixing_info.output_channels);
+    }
+
+    json_t* loop_info = NULL;
+
+    if (info.loop_info.end > info.loop_info.start) {
+        loop_info = json_pack("{sisi}",
+            "start", info.loop_info.start,
+            "end", info.loop_info.end);
+    }
+
+    json_t* interleave_info = NULL;
+
+    if (info.interleave_info.last_block > info.interleave_info.first_block) {
+        interleave_info = json_pack("{sisi}",
+            "firstBlock", info.interleave_info.first_block,
+            "lastBlock", info.interleave_info.last_block
+        );
+    }
+    
+    json_t* stream_info = json_pack("{sisssi}",
+        "index", info.stream_info.current,
+        "name", info.stream_info.name,
+        "total", info.stream_info.total
+    );
+
+    if (info.stream_info.name[0] == '\0') {
+        json_object_set(stream_info, "name", json_null());
+    }
+
+    json_t* final_object = json_pack(
+        "{sssisiso?siso?so?sisssssisssiso?}",
+        "version", version_string,
+        "sampleRate", info.sample_rate,
+        "channels", info.channels,
+        "mixingInfo", mixing_info,
+        "channelLayout", info.channel_layout,
+        "loopingInfo", loop_info,
+        "interleaveInfo", interleave_info,
+        "numberOfSamples", info.num_samples,
+        "encoding", info.encoding,
+        "layout", info.layout,
+        "frameSize", info.frame_size,
+        "metadataSource", info.metadata,
+        "bitrate", info.bitrate,
+        "streamInfo", stream_info
+    );
+
+    if (info.frame_size == 0) {
+        json_object_set(final_object, "frameSize", json_null());
+    }
+
+    if (info.channel_layout == 0) {
+        json_object_set(final_object, "channelLayout", json_null());
+    }
+    
+    json_dumpf(final_object, stdout, JSON_COMPACT);
+
+    json_decref(final_object);
+}
+#endif
 
 static void make_smpl_chunk(uint8_t* buf, int32_t loop_start, int32_t loop_end) {
     int i;
