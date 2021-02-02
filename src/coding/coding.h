@@ -37,7 +37,8 @@ void decode_apple_ima4(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelsp
 void decode_fsb_ima(VGMSTREAM* vgmstream, VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
 void decode_wwise_ima(VGMSTREAM* vgmstream, VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
 void decode_awc_ima(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
-void decode_ubi_ima(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel, int codec_config);
+void decode_ubi_ima(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
+void decode_ubi_sce_ima(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
 void decode_h4m_ima(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel, uint16_t frame_format);
 void decode_cd_ima(VGMSTREAMCHANNEL* stream, sample_t* outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do, int channel);
 size_t ima_bytes_to_samples(size_t bytes, int channels);
@@ -270,6 +271,17 @@ void seek_imuse(imuse_codec_data* data, int32_t num_sample);
 void free_imuse(imuse_codec_data* data);
 
 
+/* compresswave_decoder */
+typedef struct compresswave_codec_data compresswave_codec_data;
+
+compresswave_codec_data* init_compresswave(STREAMFILE* sf);
+void decode_compresswave(compresswave_codec_data* data, sample_t* outbuf, int32_t samples_to_do);
+void reset_compresswave(compresswave_codec_data* data);
+void seek_compresswave(compresswave_codec_data* data, int32_t num_sample);
+void free_compresswave(compresswave_codec_data* data);
+STREAMFILE* compresswave_get_streamfile(compresswave_codec_data* data);
+
+
 /* ea_mt_decoder*/
 typedef struct ea_mt_codec_data ea_mt_codec_data;
 
@@ -344,6 +356,7 @@ typedef enum {
     VORBIS_OGL,         /* Shin'en OGL: custom packet headers */
     VORBIS_SK,          /* Silicon Knights AUD: "OggS" replaced by "SK" */
     VORBIS_VID1,        /* Neversoft VID1: custom packet blocks/headers */
+    VORBIS_AWC,         /* Rockstar AWC: custom packet blocks/headers */
 } vorbis_custom_t;
 
 /* config for Wwise Vorbis (3 types for flexibility though not all combinations exist) */
@@ -365,6 +378,9 @@ typedef struct {
     wwise_setup_t setup_type;
     wwise_header_t header_type;
     wwise_packet_t packet_type;
+
+    /* AWC config */
+    off_t header_offset;
 
     /* output (kinda ugly here but to simplify) */
     off_t data_start_offset;
@@ -508,6 +524,18 @@ void free_celt_fsb(celt_codec_data* data);
 #endif
 
 
+#ifdef VGM_USE_SPEEX
+/* speex_decoder */
+typedef struct speex_codec_data speex_codec_data;
+
+speex_codec_data* init_speex_ea(int channels);
+void decode_speex(VGMSTREAM* vgmstream, sample_t* outbuf, int32_t samples_to_do);
+void reset_speex(speex_codec_data* data);
+void seek_speex(VGMSTREAM* vgmstream, int32_t num_sample);
+void free_speex(speex_codec_data* data);
+#endif
+
+
 #ifdef VGM_USE_FFMPEG
 /* ffmpeg_decoder */
 ffmpeg_codec_data* init_ffmpeg_offset(STREAMFILE* sf, uint64_t start, uint64_t size);
@@ -541,14 +569,21 @@ typedef struct {
     int coupled_count;
     int stream_count;
     int channel_mapping[8];
+    /* frame table */
+    off_t table_offset;
+    int table_count;
+    /* fixed frames */
+    uint16_t frame_size;
 } opus_config;
 
 ffmpeg_codec_data* init_ffmpeg_switch_opus_config(STREAMFILE* sf, off_t start_offset, size_t data_size, opus_config* cfg);
 ffmpeg_codec_data* init_ffmpeg_switch_opus(STREAMFILE* sf, off_t start_offset, size_t data_size, int channels, int skip, int sample_rate);
 ffmpeg_codec_data* init_ffmpeg_ue4_opus(STREAMFILE* sf, off_t start_offset, size_t data_size, int channels, int skip, int sample_rate);
 ffmpeg_codec_data* init_ffmpeg_ea_opus(STREAMFILE* sf, off_t start_offset, size_t data_size, int channels, int skip, int sample_rate);
-ffmpeg_codec_data* init_ffmpeg_x_opus(STREAMFILE* sf, off_t start_offset, size_t data_size, int channels, int skip, int sample_rate);
+ffmpeg_codec_data* init_ffmpeg_x_opus(STREAMFILE* sf, off_t table_offset, int table_count, off_t data_offset, size_t data_size, int channels, int skip);
 ffmpeg_codec_data* init_ffmpeg_fsb_opus(STREAMFILE* sf, off_t start_offset, size_t data_size, int channels, int skip, int sample_rate);
+ffmpeg_codec_data* init_ffmpeg_wwise_opus(STREAMFILE* sf, off_t data_offset, size_t data_size, opus_config* cfg);
+ffmpeg_codec_data* init_ffmpeg_fixed_opus(STREAMFILE* sf, off_t data_offset, size_t data_size, opus_config* cfg);
 
 size_t switch_opus_get_samples(off_t offset, size_t stream_size, STREAMFILE* sf);
 
@@ -607,6 +642,7 @@ size_t atrac3plus_bytes_to_samples(size_t bytes, int full_block_align);
 size_t ac3_bytes_to_samples(size_t bytes, int full_block_align, int channels);
 size_t aac_get_samples(STREAMFILE* sf, off_t start_offset, size_t bytes);
 size_t mpeg_get_samples(STREAMFILE* sf, off_t start_offset, size_t bytes);
+int32_t mpeg_get_samples_clean(STREAMFILE* sf, off_t start, size_t size, size_t* p_loop_start, size_t* p_loop_end, int is_vbr);
 
 
 /* helper to pass a wrapped, clamped, fake extension-ed, SF to another meta */

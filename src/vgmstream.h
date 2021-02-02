@@ -28,6 +28,7 @@ enum { VGMSTREAM_MAX_NUM_SAMPLES = 1000000000 }; /* no ~5h vgm hopefully */
 //#define VGM_USE_FFMPEG
 //#define VGM_USE_ATRAC9
 //#define VGM_USE_CELT
+//#define VGM_USE_SPEEX
 
 
 #ifdef VGM_USE_VORBIS
@@ -143,6 +144,7 @@ typedef enum {
     coding_REF_IMA,         /* Reflections IMA ADPCM */
     coding_AWC_IMA,         /* Rockstar AWC IMA ADPCM */
     coding_UBI_IMA,         /* Ubisoft IMA ADPCM */
+    coding_UBI_SCE_IMA,     /* Ubisoft SCE IMA ADPCM */
     coding_H4M_IMA,         /* H4M IMA ADPCM (stereo or mono, high nibble first) */
     coding_MTF_IMA,         /* Capcom MT Framework IMA ADPCM */
     coding_CD_IMA,          /* Crystal Dynamics IMA ADPCM */
@@ -174,6 +176,7 @@ typedef enum {
     coding_OKI4S,           /* OKI 4-bit ADPCM with 16-bit output and cuadruple step */
     coding_PTADPCM,         /* Platinum 4-bit ADPCM */
     coding_IMUSE,           /* LucasArts iMUSE Variable ADPCM */
+    coding_COMPRESSWAVE,    /* CompressWave Huffman ADPCM */
 
     /* others */
     coding_SDX2,            /* SDX2 2:1 Squareroot-Delta-Exact compression DPCM */
@@ -228,6 +231,10 @@ typedef enum {
 
 #ifdef VGM_USE_CELT
     coding_CELT_FSB,        /* Custom Xiph CELT (MDCT-based) */
+#endif
+
+#ifdef VGM_USE_SPEEX
+    coding_SPEEX,           /* Custom Speex (CELP-based) */
 #endif
 
 #ifdef VGM_USE_FFMPEG
@@ -359,7 +366,7 @@ typedef enum {
     meta_PS2_EXST,          /* Shadow of Colossus EXST */
     meta_SVAG_KCET,
     meta_PS_HEADERLESS,     /* headerless PS-ADPCM */
-    meta_PS2_MIB_MIH,       /* MIB File + MIH Header*/
+    meta_MIB_MIH,
     meta_PS2_MIC,           /* KOEI MIC File */
     meta_PS2_VAGi,          /* VAGi Interleaved File */
     meta_PS2_VAGp,          /* VAGp Mono File */
@@ -743,6 +750,14 @@ typedef enum {
     meta_SDRH,
     meta_WADY,
     meta_DSP_SQEX,
+    meta_DSP_WIIVOICE,
+    meta_SBK,
+    meta_DSP_WIIADPCM,
+    meta_DSP_CWAC,
+    meta_COMPRESSWAVE,
+    meta_KTAC,
+    meta_MJB_MJH,
+    meta_BSNF,
 } meta_t;
 
 /* standard WAVEFORMATEXTENSIBLE speaker positions */
@@ -770,16 +785,19 @@ typedef enum {
 } speaker_t;
 
 /* typical mappings that metas may use to set channel_layout (but plugin must actually use it)
- * (in order, so 3ch file could be mapped to FL FR FC or FL FR LFE but not LFE FL FR) */
+ * (in order, so 3ch file could be mapped to FL FR FC or FL FR LFE but not LFE FL FR)
+ * not too sure about names but no clear standards */
 typedef enum {
     mapping_MONO             = speaker_FC,
     mapping_STEREO           = speaker_FL | speaker_FR,
     mapping_2POINT1          = speaker_FL | speaker_FR | speaker_LFE,
-    mapping_2POINT1_xiph     = speaker_FL | speaker_FR | speaker_FC,
+    mapping_2POINT1_xiph     = speaker_FL | speaker_FR | speaker_FC, /* aka 3STEREO? */
     mapping_QUAD             = speaker_FL | speaker_FR | speaker_BL  | speaker_BR,
     mapping_QUAD_surround    = speaker_FL | speaker_FR | speaker_FC  | speaker_BC,
+    mapping_QUAD_side        = speaker_FL | speaker_FR | speaker_SL  | speaker_SR,
     mapping_5POINT0          = speaker_FL | speaker_FR | speaker_LFE | speaker_BL | speaker_BR,
     mapping_5POINT0_xiph     = speaker_FL | speaker_FR | speaker_FC  | speaker_BL | speaker_BR,
+    mapping_5POINT0_surround = speaker_FL | speaker_FR | speaker_FC  | speaker_SL | speaker_SR,
     mapping_5POINT1          = speaker_FL | speaker_FR | speaker_FC  | speaker_LFE | speaker_BL | speaker_BR,
     mapping_5POINT1_surround = speaker_FL | speaker_FR | speaker_FC  | speaker_LFE | speaker_SL | speaker_SR,
     mapping_7POINT0          = speaker_FL | speaker_FR | speaker_FC  | speaker_LFE | speaker_BC | speaker_FLC | speaker_FRC,
@@ -1001,6 +1019,7 @@ typedef struct {
     sample_t* buffer;
     int input_channels;     /* internal buffer channels */
     int output_channels;    /* resulting channels (after mixing, if applied) */
+    int mixed_channels;     /* segments have different number of channels */
 } segmented_layout_data;
 
 /* for files made of "parallel" layers, one per group of channels (using a complete sub-VGMSTREAM) */

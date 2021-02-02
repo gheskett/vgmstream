@@ -1,7 +1,7 @@
 #include "meta.h"
 #include "../coding/coding.h"
 
-typedef enum { ADX, HCA, VAG, RIFF, CWAV, DSP } awb_type;
+typedef enum { ADX, HCA, VAG, RIFF, CWAV, DSP, CWAC } awb_type;
 
 static void load_awb_name(STREAMFILE* sf, STREAMFILE* sf_acb, VGMSTREAM* vgmstream, int waveid);
 
@@ -116,6 +116,10 @@ VGMSTREAM* init_vgmstream_awb_memory(STREAMFILE* sf, STREAMFILE* sf_acb) {
         type = DSP;
         extension = "dsp";
     }
+    else if (is_id32be(subfile_offset,sf, "CWAC")) { /* type 13 again */
+        type = CWAC;
+        extension = "dsp";
+    }
     else {
         VGM_LOG("AWB: unknown codec\n");
         goto fail;
@@ -150,6 +154,10 @@ VGMSTREAM* init_vgmstream_awb_memory(STREAMFILE* sf, STREAMFILE* sf_acb) {
             vgmstream = init_vgmstream_ngc_dsp_std(temp_sf);
             if (!vgmstream) goto fail;
             break;
+        case CWAC: /* Mario & Sonic at the Rio 2016 Olympic Games (WiiU) */
+            vgmstream = init_vgmstream_dsp_cwac(temp_sf);
+            if (!vgmstream) goto fail;
+            break;
         default:
             goto fail;
     }
@@ -178,9 +186,13 @@ static void load_awb_name(STREAMFILE* sf, STREAMFILE* sf_acb, VGMSTREAM* vgmstre
         char filename[PATH_LIMIT];
         int len_name, len_cmp;
 
+        /* try parsing TXTM if present */
+        sf_acb = read_filemap_file(sf, 0);
 
         /* try (name).awb + (name).awb */
-        sf_acb = open_streamfile_by_ext(sf, "acb");
+        if (!sf_acb) {
+            sf_acb = open_streamfile_by_ext(sf, "acb");
+        }
 
         /* try (name)_streamfiles.awb + (name).acb */
         if (!sf_acb) {

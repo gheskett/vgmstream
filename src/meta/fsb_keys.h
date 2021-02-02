@@ -1,13 +1,6 @@
 #ifndef _FSB_KEYS_H_
 #define _FSB_KEYS_H_
 
-typedef struct {
-    int is_fsb5; /* FSB5 or FSB4/3*/
-    int is_alt; /* alt XOR mode (seemingly not tied to FSB version or anything) */
-    size_t fsbkey_size;
-    const uint8_t *fsbkey;
-} fsbkey_info;
-
 /**
  * List of known keys, found in aluigi's site (http://aluigi.altervista.org), forums, guessfsb.exe or manually.
  */
@@ -84,11 +77,24 @@ static const uint8_t key_scp[] = { 0x42,0x61,0x73,0x69,0x63,0x45,0x6E,0x63,0x72,
 /* Guitar Hero: Metallica (X360) */
 static const uint8_t key_ghm[] = { 0x8C,0xFA,0xF3,0x14,0xB1,0x53,0xDA,0xAB,0x2B,0x82,0x6B,0xD5,0x55,0x16,0xCF,0x01,0x90,0x20,0x28,0x14,0xB1,0x53,0xD8 };
 
+/* Worms Rumble Beta (PC) */ //"FXnTffGJ9LS855Gc"
+static const uint8_t key_wrb[] = { 0x46,0x58,0x6E,0x54,0x66,0x66,0x47,0x4A,0x39,0x4C,0x53,0x38,0x35,0x35,0x47,0x63 };
+
+/* Bubble Fighter (PC) */ //"qjvkeoqkrdhkdckd"
+static const uint8_t key_bbf[] = { 0x71,0x6A,0x76,0x6B,0x65,0x6F,0x71,0x6B,0x72,0x64,0x68,0x6B,0x64,0x63,0x6B,0x64 };
+
 // Unknown:
 // - Battle: Los Angeles
 // - Guitar Hero: Warriors of Rock, DJ hero FSB
 // - Longmenkezhan
 // - Gas Guzzlers: Combat Carnage (PC?) "C5FA83EA64B34EC2BFE" hex or text? [FSB5]
+
+typedef struct {
+    int is_fsb5; /* FSB5 or FSB4/3*/
+    int is_alt; /* alt XOR mode (seemingly not tied to FSB version or anything) */
+    size_t fsbkey_size;
+    const uint8_t* fsbkey;
+} fsbkey_info;
 
 static const fsbkey_info fsbkey_list[] = {
         { 0,0, sizeof(key_dj2),key_dj2 },
@@ -149,7 +155,8 @@ static const fsbkey_info fsbkey_list[] = {
         { 1,0, sizeof(key_sek),key_sek },// FSB5
         { 1,0, sizeof(key_scp),key_scp },// FSB5
         { 0,1, sizeof(key_ghm),key_ghm },// FSB4
-
+        { 1,0, sizeof(key_wrb),key_wrb },// FSB5
+        { 0,0, sizeof(key_bbf),key_bbf },// FSB4
 };
 static const int fsbkey_list_count = sizeof(fsbkey_list) / sizeof(fsbkey_list[0]);
 

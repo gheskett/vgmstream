@@ -1,4 +1,4 @@
-name: CMake Linux
+name: Linux build
 
 on: [push, pull_request]
 
@@ -12,6 +12,7 @@ jobs:
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#configuring-a-build-matrix
+    name: CMake, Ubuntu
     runs-on: ubuntu-latest
 
     steps:
@@ -78,5 +79,3 @@ jobs:
         cd ..
         aws s3 cp cli/vgmstream-cli.tar.gz s3://vgmstream-builds/${{github.sha}}/linux/vgmstream-cli.tar.gz --acl public-read 
         aws s3 cp audacious/vgmstream-audacious.tar.gz s3://vgmstream-builds/${{github.sha}}/linux/vgmstream-audacious.tar.gz --acl public-read
-        echo ${{github.sha}} > latest_id
-        aws s3 cp latest_id s3://vgmstream-builds/ --acl public-read

@@ -137,7 +137,7 @@
     <ClInclude Include="meta\mups_streamfile.h">
       <Filter>meta\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="meta\mzrt_streamfile.h">
+    <ClInclude Include="meta\idtech_streamfile.h">
       <Filter>meta\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="meta\nus3bank_streamfile.h">
@@ -191,6 +191,9 @@
     <ClInclude Include="meta\ubi_sb_streamfile.h">
       <Filter>meta\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="meta\ubi_sb_garbage_streamfile.h">
+      <Filter>meta\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="meta\ubi_lyn_streamfile.h">
       <Filter>meta\Header Files</Filter>
     </ClInclude>
@@ -222,6 +225,12 @@
       <Filter>coding\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="coding\coding.h">
+      <Filter>coding\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="coding\coding_utils_samples.h">
+      <Filter>coding\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="coding\compresswave_decoder_lib.h">
       <Filter>coding\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="coding\ea_mt_decoder_utk.h">
@@ -361,6 +370,9 @@
     <ClCompile Include="meta\acm.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="meta\acx.c">
+      <Filter>meta\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="meta\adp_konami.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
@@ -425,6 +437,12 @@
       <Filter>meta\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="meta\ck.c">
+      <Filter>meta\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="meta\compresswave.c">
+      <Filter>meta\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="meta\cpk.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="meta\cri_utf.c">
@@ -616,7 +634,7 @@
     <ClCompile Include="meta\myspd.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="meta\mzrt.c">
+    <ClCompile Include="meta\idtech.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="meta\naac.c">
@@ -821,6 +839,9 @@
       <Filter>meta\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="meta\ps2_hgc1.c">
+      <Filter>meta\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="meta\ifs.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="meta\ikm.c">
@@ -1252,6 +1273,12 @@
     <ClCompile Include="coding\yamaha_decoder.c">
       <Filter>coding\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="coding\compresswave_decoder.c">
+      <Filter>coding\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="coding\compresswave_decoder_lib.c">
+      <Filter>coding\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="coding\derf_decoder.c">
       <Filter>coding\Source Files</Filter>
     </ClCompile>
@@ -1363,6 +1390,9 @@
     <ClCompile Include="coding\sdx2_decoder.c">
       <Filter>coding\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="coding\speex_decoder.c">
+      <Filter>coding\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="coding\ubi_adpcm_decoder.c">
       <Filter>coding\Source Files</Filter>
     </ClCompile>
@@ -1376,6 +1406,9 @@
       <Filter>coding\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="coding\vorbis_custom_decoder.c">
+      <Filter>coding\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="coding\vorbis_custom_utils_awc.c">
       <Filter>coding\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="coding\vorbis_custom_utils_fsb.c">
@@ -1648,6 +1681,9 @@
     <ClCompile Include="meta\mib_mih.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="meta\mjb_mjh.c">
+      <Filter>meta\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="meta\mn_str.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
@@ -1798,6 +1834,9 @@
     <ClCompile Include="meta\mogg.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="meta\ktac.c">
+      <Filter>meta\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="meta\ktsc.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
@@ -1835,6 +1874,9 @@
       <Filter>meta\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="meta\kat.c">
+      <Filter>meta\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="meta\sbk.c">
       <Filter>meta\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

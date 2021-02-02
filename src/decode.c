@@ -40,6 +40,10 @@ void free_codec(VGMSTREAM* vgmstream) {
         free_imuse(vgmstream->codec_data);
     }
 
+    if (vgmstream->coding_type == coding_COMPRESSWAVE) {
+        free_compresswave(vgmstream->codec_data);
+    }
+
     if (vgmstream->coding_type == coding_EA_MT) {
         free_ea_mt(vgmstream->codec_data, vgmstream->channels);
     }
@@ -96,6 +100,12 @@ void free_codec(VGMSTREAM* vgmstream) {
     }
 #endif
 
+#ifdef VGM_USE_SPEEX
+    if (vgmstream->coding_type == coding_SPEEX) {
+        free_speex(vgmstream->codec_data);
+    }
+#endif
+
     if (vgmstream->coding_type == coding_ACM) {
         free_acm(vgmstream->codec_data);
     }
@@ -125,6 +135,10 @@ void seek_codec(VGMSTREAM* vgmstream) {
 
     if (vgmstream->coding_type == coding_IMUSE) {
         seek_imuse(vgmstream->codec_data, vgmstream->loop_current_sample);
+    }
+
+    if (vgmstream->coding_type == coding_COMPRESSWAVE) {
+        seek_compresswave(vgmstream->codec_data, vgmstream->loop_current_sample);
     }
 
     if (vgmstream->coding_type == coding_EA_MT) {
@@ -168,6 +182,12 @@ void seek_codec(VGMSTREAM* vgmstream) {
 #ifdef VGM_USE_CELT
     if (vgmstream->coding_type == coding_CELT_FSB) {
         seek_celt_fsb(vgmstream, vgmstream->loop_current_sample);
+    }
+#endif
+
+#ifdef VGM_USE_SPEEX
+    if (vgmstream->coding_type == coding_SPEEX) {
+        seek_speex(vgmstream, vgmstream->loop_current_sample);
     }
 #endif
 
@@ -219,6 +239,10 @@ void reset_codec(VGMSTREAM* vgmstream) {
         reset_imuse(vgmstream->codec_data);
     }
 
+    if (vgmstream->coding_type == coding_COMPRESSWAVE) {
+        reset_compresswave(vgmstream->codec_data);
+    }
+
     if (vgmstream->coding_type == coding_EA_MT) {
         reset_ea_mt(vgmstream);
     }
@@ -266,6 +290,12 @@ void reset_codec(VGMSTREAM* vgmstream) {
 #ifdef VGM_USE_CELT
     if (vgmstream->coding_type == coding_CELT_FSB) {
         reset_celt_fsb(vgmstream->codec_data);
+    }
+#endif
+
+#ifdef VGM_USE_SPEEX
+    if (vgmstream->coding_type == coding_SPEEX) {
+        reset_speex(vgmstream->codec_data);
     }
 #endif
 
@@ -343,6 +373,7 @@ int get_vgmstream_samples_per_frame(VGMSTREAM* vgmstream) {
         case coding_SDX2:
         case coding_SDX2_int:
         case coding_CBD2:
+        case coding_CBD2_int:
         case coding_ACM:
         case coding_DERF:
         case coding_WADY:
@@ -356,6 +387,7 @@ int get_vgmstream_samples_per_frame(VGMSTREAM* vgmstream) {
         case coding_SNDS_IMA:
         case coding_OTNS_IMA:
         case coding_UBI_IMA:
+        case coding_UBI_SCE_IMA:
         case coding_OKI16:
         case coding_OKI4S:
         case coding_MTF_IMA:
@@ -469,6 +501,8 @@ int get_vgmstream_samples_per_frame(VGMSTREAM* vgmstream) {
             return 0; /* varies per mode */
         case coding_IMUSE:
             return 0; /* varies per frame */
+        case coding_COMPRESSWAVE:
+            return 0; /* multiple of 2 */
         case coding_EA_MT:
             return 0; /* 432, but variable in looped files */
         case coding_CIRCUS_VQ:
@@ -492,6 +526,10 @@ int get_vgmstream_samples_per_frame(VGMSTREAM* vgmstream) {
 #ifdef VGM_USE_CELT
         case coding_CELT_FSB:
             return 0; /* 512? */
+#endif
+#ifdef VGM_USE_SPEEX
+        case coding_SPEEX:
+            return 0;
 #endif
         default:
             return 0;
@@ -544,6 +582,7 @@ int get_vgmstream_frame_size(VGMSTREAM* vgmstream) {
         case coding_SDX2:
         case coding_SDX2_int:
         case coding_CBD2:
+        case coding_CBD2_int:
         case coding_DERF:
         case coding_WADY:
         case coding_NWA:
@@ -581,6 +620,8 @@ int get_vgmstream_frame_size(VGMSTREAM* vgmstream) {
         case coding_OTNS_IMA:
             return 0; //todo: 0x01?
         case coding_UBI_IMA: /* variable (PCM then IMA) */
+            return 0;
+        case coding_UBI_SCE_IMA:
             return 0;
         case coding_XBOX_IMA:
             //todo should be  0x48 when stereo, but blocked/interleave layout don't understand stereo codecs
@@ -672,6 +713,8 @@ int get_vgmstream_frame_size(VGMSTREAM* vgmstream) {
             return 0; /* varies per mode? */
         case coding_IMUSE:
             return 0; /* varies per frame */
+        case coding_COMPRESSWAVE:
+            return 0; /* huffman bits */
         case coding_EA_MT:
             return 0; /* variable (frames of bit counts or PCM frames) */
 #ifdef VGM_USE_ATRAC9
@@ -681,6 +724,10 @@ int get_vgmstream_frame_size(VGMSTREAM* vgmstream) {
 #ifdef VGM_USE_CELT
         case coding_CELT_FSB:
             return 0; /* varies, usually 0x80-100 */
+#endif
+#ifdef VGM_USE_SPEEX
+        case coding_SPEEX:
+            return 0; /* varies, usually 0x40-60 */
 #endif
         default: /* Vorbis, MPEG, ACM, etc */
             return 0;
@@ -1154,8 +1201,13 @@ void decode_vgmstream(VGMSTREAM* vgmstream, int samples_written, int samples_to_
         case coding_UBI_IMA:
             for (ch = 0; ch < vgmstream->channels; ch++) {
                 decode_ubi_ima(&vgmstream->ch[ch], buffer+ch,
-                        vgmstream->channels, vgmstream->samples_into_block, samples_to_do, ch,
-                        vgmstream->codec_config);
+                        vgmstream->channels, vgmstream->samples_into_block, samples_to_do, ch);
+            }
+            break;
+        case coding_UBI_SCE_IMA:
+            for (ch = 0; ch < vgmstream->channels; ch++) {
+                decode_ubi_sce_ima(&vgmstream->ch[ch], buffer+ch,
+                    vgmstream->channels, vgmstream->samples_into_block, samples_to_do, ch);
             }
             break;
         case coding_H4M_IMA:
@@ -1219,6 +1271,11 @@ void decode_vgmstream(VGMSTREAM* vgmstream, int samples_written, int samples_to_
 #ifdef VGM_USE_CELT
         case coding_CELT_FSB:
             decode_celt_fsb(vgmstream, buffer, samples_to_do, vgmstream->channels);
+            break;
+#endif
+#ifdef VGM_USE_SPEEX
+        case coding_SPEEX:
+            decode_speex(vgmstream, buffer, samples_to_do);
             break;
 #endif
         case coding_ACM:
@@ -1374,6 +1431,10 @@ void decode_vgmstream(VGMSTREAM* vgmstream, int samples_written, int samples_to_
 
         case coding_IMUSE:
             decode_imuse(vgmstream, buffer, samples_to_do);
+            break;
+
+        case coding_COMPRESSWAVE:
+            decode_compresswave(vgmstream->codec_data, buffer, samples_to_do);
             break;
 
         case coding_EA_MT:

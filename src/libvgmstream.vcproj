@@ -329,7 +329,7 @@
                     >
                 </File>
                 <File
-                    RelativePath=".\meta\mzrt_streamfile.h"
+                    RelativePath=".\meta\idtech_streamfile.h"
                     >
                 </File>
                 <File
@@ -398,6 +398,10 @@
                 </File>
                 <File
                     RelativePath=".\meta\ubi_sb_streamfile.h"
+                    >
+                </File>
+                <File
+                    RelativePath=".\meta\ubi_sb_garbage_streamfile.h"
                     >
                 </File>
                 <File
@@ -494,6 +498,10 @@
                 </File>
                 <File
                     RelativePath=".\meta\acm.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\meta\acx.c"
                     >
                 </File>
                 <File
@@ -618,6 +626,14 @@
 				</File>
                 <File
                     RelativePath=".\meta\ck.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\meta\compresswave.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\meta\cpk.c"
                     >
                 </File>
                 <File
@@ -873,6 +889,10 @@
 					>
 				</File>
                 <File
+                    RelativePath=".\meta\ktac.c"
+                    >
+                </File>
+                <File
                     RelativePath=".\meta\ktsc.c"
                     >
                 </File>
@@ -914,6 +934,10 @@
 				</File>
                 <File
                     RelativePath=".\meta\mib_mih.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\meta\mjb_mjh.c"
                     >
                 </File>
 				<File
@@ -967,7 +991,7 @@
                     >
                 </File>
                 <File
-                    RelativePath=".\meta\mzrt.c"
+                    RelativePath=".\meta\idtech.c"
                     >
                 </File>
                 <File
@@ -1278,10 +1302,14 @@
 					RelativePath=".\meta\ps2_iab.c"
 					>
 				</File>
-				<File
-					RelativePath=".\meta\ikm.c"
-					>
-				</File>
+                <File
+                    RelativePath=".\meta\ifs.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\meta\ikm.c"
+                    >
+                </File>
 				<File
 					RelativePath=".\meta\ps2_ild.c"
 					>
@@ -2015,6 +2043,14 @@
                     >
                 </File>
                 <File
+                    RelativePath=".\coding\coding_utils_samples.h"
+                    >
+                </File>
+                <File
+                    RelativePath=".\coding\compresswave_decoder_lib.h"
+                    >
+                </File>
+                <File
                     RelativePath=".\coding\ea_mt_decoder_utk.h"
                     >
                 </File>
@@ -2104,6 +2140,14 @@
                 </File>
                 <File
                     RelativePath=".\coding\coding_utils.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\coding\compresswave_decoder.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\coding\compresswave_decoder_lib.c"
                     >
                 </File>
                 <File
@@ -2283,6 +2327,10 @@
                     >
                 </File>
                 <File
+                    RelativePath=".\coding\speex_decoder.c"
+                    >
+                </File>
+                <File
                     RelativePath=".\coding\ubi_adpcm_decoder.c"
                     >
                 </File>
@@ -2308,6 +2356,10 @@
                 </File>
                 <File
                     RelativePath=".\coding\vorbis_custom_decoder.c"
+                    >
+                </File>
+                <File
+                    RelativePath=".\coding\vorbis_custom_utils_awc.c"
                     >
                 </File>
                 <File

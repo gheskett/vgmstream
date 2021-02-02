@@ -25,7 +25,8 @@ static const char* extension_list[] = {
     "208",
     "2dx9",
     "2pfs",
-    "4", // for Game.com audio
+    "3do",
+    "4", //for Game.com audio
     "8", //txth/reserved [Gungage (PS1)]
     "800",
     "9tav",
@@ -38,6 +39,7 @@ static const char* extension_list[] = {
     //"ac3", //common, FFmpeg/not parsed (AC3)
     "acb",
     "acm",
+    "acx",
     "ad", //txth/reserved [Xenosaga Freaks (PS2)]
     "adc", //txth/reserved [Tomb Raider The Last Revelation (DC), Tomb Raider Chronicles (DC)]
     "adm",
@@ -102,7 +104,7 @@ static const char* extension_list[] = {
     "bgw",
     "bh2pcm",
     "bik",
-    "bika",
+    "bika", //fake extension for .bik (to be removed)
     "bik2",
     //"bin", //common
     "bk2",
@@ -116,6 +118,7 @@ static const char* extension_list[] = {
     "bo2",
     "brstm",
     "brstmspm",
+    "bsnd",
     "btsnd",
     "bvg",
     "bwav",
@@ -126,6 +129,7 @@ static const char* extension_list[] = {
     "ccc",
     "cd",
     "cfn", //fake extension for CAF (renamed, to be removed?)
+    "chk",
     "ckb",
     "ckd",
     "cks",
@@ -135,6 +139,7 @@ static const char* extension_list[] = {
     "csa", //txth/reserved [LEGO Racers 2 (PS2)]
     "csmp",
     "cvs",
+    "cwav",
     "cxs",
 
     "da",
@@ -220,6 +225,7 @@ static const char* extension_list[] = {
     "idwav",
     "idx",
     "idxma",
+    "ifs",
     "ikm",
     "ild",
     "ilv", //txth/reserved [Star Wars Episode III (PS2)]
@@ -247,6 +253,7 @@ static const char* extension_list[] = {
     "kovs", //fake extension/header id for .kvs
     "kns",
     "kraw",
+    "ktac",
     "ktsl2asbin",
     "ktss", //fake extension/header id for .kns
     "kvs",
@@ -300,6 +307,7 @@ static const char* extension_list[] = {
     "mds",
     "mdsp",
     "med",
+    "mjb",
     "mi4",
     "mib",
     "mic",
@@ -333,18 +341,21 @@ static const char* extension_list[] = {
     "musc",
     "musx",
     "mvb", //txth/reserved [Porsche Challenge (PS1)]
+    "mwa", //txth/reserved [Fatal Frame (Xbox)]
     "mwv",
     "mxst",
     "myspd",
 
     "n64",
     "naac",
-    "ndp",
+    "nds",
+    "ndp", //fake extension/header id for .nds
     "ngca",
     "nlsd",
     "nop",
     "nps",
     "npsf", //fake extension/header id for .nps (in bigfiles)
+    "nsopus",
     "nub",
     "nub2",
     "nus3audio",
@@ -422,6 +433,7 @@ static const char* extension_list[] = {
     "sb5",
     "sb6",
     "sb7",
+    "sbk",
     "sbr",
     "sbv",
     "sm0",
@@ -748,6 +760,7 @@ static const coding_info coding_info_list[] = {
         {coding_REF_IMA,            "Reflections 4-bit IMA ADPCM"},
         {coding_AWC_IMA,            "Rockstar AWC 4-bit IMA ADPCM"},
         {coding_UBI_IMA,            "Ubisoft 4-bit IMA ADPCM"},
+        {coding_UBI_SCE_IMA,        "Ubisoft 4-bit SCE IMA ADPCM"},
         {coding_H4M_IMA,            "Hudson HVQM4 4-bit IMA ADPCM"},
         {coding_CD_IMA,             "Crystal Dynamics 4-bit IMA ADPCM"},
 
@@ -775,6 +788,7 @@ static const coding_info coding_info_list[] = {
         {coding_OKI4S,              "OKI 4-bit ADPCM (4-shift)"},
         {coding_PTADPCM,            "Platinum 4-bit ADPCM"},
         {coding_IMUSE,              "LucasArts iMUSE VIMA ADPCM"},
+        {coding_COMPRESSWAVE,       "CompressWave Huffman ADPCM"},
 
         {coding_SDX2,               "Squareroot-delta-exact (SDX2) 8-bit DPCM"},
         {coding_SDX2_int,           "Squareroot-delta-exact (SDX2) 8-bit DPCM with 1 byte interleave"},
@@ -818,6 +832,9 @@ static const coding_info coding_info_list[] = {
 #endif
 #ifdef VGM_USE_CELT
         {coding_CELT_FSB,           "Custom CELT"},
+#endif
+#ifdef VGM_USE_SPEEX
+        {coding_SPEEX,              "Custom Speex"},
 #endif
 #ifdef VGM_USE_FFMPEG
         {coding_FFmpeg,             "FFmpeg"},
@@ -915,7 +932,7 @@ static const meta_info meta_info_list[] = {
         {meta_PS2_EXST,             "Sony EXST header"},
         {meta_SVAG_KCET,            "Konami SVAG header"},
         {meta_PS_HEADERLESS,        "Headerless PS-ADPCM raw header"},
-        {meta_PS2_MIB_MIH,          "Sony MultiStream MIH+MIB header"},
+        {meta_MIB_MIH,              "Sony MultiStream MIH+MIB header"},
         {meta_DSP_MPDSP,            "Single DSP header stereo by .mpdsp extension"},
         {meta_PS2_MIC,              "KOEI .MIC header"},
         {meta_DSP_JETTERS,          "Double DSP header stereo by _lr.dsp extension"},
@@ -945,7 +962,7 @@ static const meta_info meta_info_list[] = {
         {meta_DSP_WSI,              "Alone in the Dark .WSI header"},
         {meta_AIFC,                 "Apple AIFF-C (Audio Interchange File Format) header"},
         {meta_AIFF,                 "Apple AIFF (Audio Interchange File Format) header"},
-        {meta_STR_SNDS,             "3DO .str header"},
+        {meta_STR_SNDS,             "3DO SNDS header"},
         {meta_WS_AUD,               "Westwood Studios .aud header"},
         {meta_WS_AUD_old,           "Westwood Studios .aud (old) header"},
         {meta_PS2_IVB,              "IVB/BVII header"},
@@ -1318,6 +1335,14 @@ static const meta_info meta_info_list[] = {
         {meta_SDRH,                 "feelplus SDRH header"},
         {meta_WADY,                 "Marble WADY header"},
         {meta_DSP_SQEX,             "Square Enix DSP header"},
+        {meta_DSP_WIIVOICE,         "Koei Tecmo WiiVoice header"},
+        {meta_SBK,                  "Team17 SBK header"},
+        {meta_DSP_WIIADPCM,         "Exient WIIADPCM header"},
+        {meta_DSP_CWAC,             "CRI CWAC header"},
+        {meta_COMPRESSWAVE,         "CompressWave .cwav header"},
+        {meta_KTAC,                 "Koei Tecmo KTAC header"},
+        {meta_MJB_MJH,              "Sony MultiStream MJH+MJB header"},
+        {meta_BSNF,                 "id Software BSNF header"},
 };
 
 void get_vgmstream_coding_description(VGMSTREAM* vgmstream, char* out, size_t out_size) {

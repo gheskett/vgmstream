@@ -59,7 +59,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../ext_includes;$(DependenciesDir)/qaac/mp4v2/include;$(DependenciesDir)/fdk-aac/libSYS/include;$(DependenciesDir)/fdk-aac/libAACdec/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;VGM_USE_VORBIS;VGM_USE_MPEG;VGM_USE_FFMPEG;VGM_USE_G7221;VGM_USE_G719;VGM_USE_ATRAC9;VGM_USE_CELT;USE_ALLOCA;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;VGM_USE_VORBIS;VGM_USE_MPEG;VGM_USE_FFMPEG;VGM_USE_G7221;VGM_USE_G719;VGM_USE_ATRAC9;VGM_USE_CELT;VGM_USE_SPEEX;USE_ALLOCA;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
@@ -72,7 +72,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>../ext_includes;$(DependenciesDir)/qaac/mp4v2/include;$(DependenciesDir)/fdk-aac/libSYS/include;$(DependenciesDir)/fdk-aac/libAACdec/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x501;WIN32;VGM_USE_VORBIS;VGM_USE_MPEG;VGM_USE_FFMPEG;VGM_USE_G7221;VGM_USE_G719;VGM_USE_ATRAC9;VGM_USE_CELT;USE_ALLOCA;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x501;WIN32;VGM_USE_VORBIS;VGM_USE_MPEG;VGM_USE_FFMPEG;VGM_USE_G7221;VGM_USE_G719;VGM_USE_ATRAC9;VGM_USE_CELT;VGM_USE_SPEEX;USE_ALLOCA;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -130,7 +130,7 @@
     <ClInclude Include="meta\mta2_streamfile.h" />
     <ClInclude Include="meta\mul_streamfile.h" />
     <ClInclude Include="meta\mups_streamfile.h" />
-    <ClInclude Include="meta\mzrt_streamfile.h" />
+    <ClInclude Include="meta\idtech_streamfile.h" />
     <ClInclude Include="meta\nus3bank_streamfile.h" />
     <ClInclude Include="meta\ogg_vorbis_streamfile.h" />
     <ClInclude Include="meta\opus_interleave_streamfile.h" />
@@ -142,6 +142,7 @@
     <ClInclude Include="meta\txth_streamfile.h" />
     <ClInclude Include="meta\ubi_bao_streamfile.h" />
     <ClInclude Include="meta\ubi_sb_streamfile.h" />
+    <ClInclude Include="meta\ubi_sb_garbage_streamfile.h" />
     <ClInclude Include="meta\ubi_lyn_streamfile.h" />
     <ClInclude Include="meta\meta.h" />
     <ClInclude Include="meta\hca_keys.h" />
@@ -153,6 +154,8 @@
     <ClInclude Include="coding\circus_decoder_lzxpcm.h" />
     <ClInclude Include="coding\circus_decoder_miniz.h" />
     <ClInclude Include="coding\coding.h" />
+    <ClInclude Include="coding\coding_utils_samples.h" />
+    <ClInclude Include="coding\compresswave_decoder_lib.h" />
     <ClInclude Include="coding\ea_mt_decoder_utk.h" />
     <ClInclude Include="coding\g7221_decoder_aes.h" />
     <ClInclude Include="coding\g7221_decoder_lib.h" />
@@ -199,6 +202,7 @@
     <ClCompile Include="meta\imuse.c" />
     <ClCompile Include="meta\ios_psnd.c" />
     <ClCompile Include="meta\kat.c" />
+    <ClCompile Include="meta\ktac.c" />
     <ClCompile Include="meta\ktsc.c" />
     <ClCompile Include="meta\ktsr.c" />
     <ClCompile Include="meta\ktss.c" />
@@ -207,6 +211,7 @@
     <ClCompile Include="meta\lsf.c" />
     <ClCompile Include="meta\mattel_hyperscan.c" />
     <ClCompile Include="meta\mib_mih.c" />
+    <ClCompile Include="meta\mjb_mjh.c" />
     <ClCompile Include="meta\mn_str.c" />
     <ClCompile Include="meta\mogg.c" />
     <ClCompile Include="meta\mp4.c" />
@@ -227,6 +232,7 @@
     <ClCompile Include="meta\mtaf.c" />
     <ClCompile Include="meta\ps2_spm.c" />
     <ClCompile Include="meta\rad.c" />
+    <ClCompile Include="meta\sbk.c" />
     <ClCompile Include="meta\tgc.c" />
     <ClCompile Include="meta\vs_str.c" />
     <ClCompile Include="meta\ps2_wmus.c" />
@@ -280,6 +286,7 @@
     <ClCompile Include="meta\aax.c" />
     <ClCompile Include="meta\acb.c" />
     <ClCompile Include="meta\acm.c" />
+    <ClCompile Include="meta\acx.c" />
     <ClCompile Include="meta\adp_konami.c" />
     <ClCompile Include="meta\adpcm_capcom.c" />
     <ClCompile Include="meta\ads.c" />
@@ -306,6 +313,8 @@
     <ClCompile Include="meta\bsf.c" />
     <ClCompile Include="meta\capdsp.c" />
     <ClCompile Include="meta\ck.c" />
+    <ClCompile Include="meta\compresswave.c" />
+    <ClCompile Include="meta\cpk.c" />
     <ClCompile Include="meta\cri_utf.c" />
     <ClCompile Include="meta\csb.c" />
     <ClCompile Include="meta\csmp.c" />
@@ -370,7 +379,7 @@
     <ClCompile Include="meta\musc.c" />
     <ClCompile Include="meta\musx.c" />
     <ClCompile Include="meta\myspd.c" />
-    <ClCompile Include="meta\mzrt.c" />
+    <ClCompile Include="meta\idtech.c" />
     <ClCompile Include="meta\naac.c" />
     <ClCompile Include="meta\naomi_adpcm.c" />
     <ClCompile Include="meta\naomi_spsd.c" />
@@ -439,6 +448,7 @@
     <ClCompile Include="meta\ps2_gbts.c" />
     <ClCompile Include="meta\ps2_gcm.c" />
     <ClCompile Include="meta\ps2_hgc1.c" />
+    <ClCompile Include="meta\ifs.c" />
     <ClCompile Include="meta\ikm.c" />
     <ClCompile Include="meta\ps2_ild.c" />
     <ClCompile Include="meta\raw_int.c" />
@@ -589,6 +599,8 @@
     <ClCompile Include="coding\adx_decoder.c" />
     <ClCompile Include="coding\asf_decoder.c" />
     <ClCompile Include="coding\yamaha_decoder.c" />
+    <ClCompile Include="coding\compresswave_decoder.c" />
+    <ClCompile Include="coding\compresswave_decoder_lib.c" />
     <ClCompile Include="coding\derf_decoder.c" />
     <ClCompile Include="coding\dsa_decoder.c" />
     <ClCompile Include="coding\ea_mt_decoder.c" />
@@ -627,9 +639,11 @@
     <ClCompile Include="coding\relic_decoder_mixfft.c" />
     <ClCompile Include="coding\sassc_decoder.c" />
     <ClCompile Include="coding\sdx2_decoder.c" />
+    <ClCompile Include="coding\speex_decoder.c" />
     <ClCompile Include="coding\ubi_adpcm_decoder.c" />
     <ClCompile Include="coding\vadpcm_decoder.c" />
     <ClCompile Include="coding\vorbis_custom_decoder.c" />
+    <ClCompile Include="coding\vorbis_custom_utils_awc.c" />
     <ClCompile Include="coding\vorbis_custom_utils_fsb.c" />
     <ClCompile Include="coding\vorbis_custom_utils_ogl.c" />
     <ClCompile Include="coding\vorbis_custom_utils_sk.c" />

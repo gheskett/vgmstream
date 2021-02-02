@@ -373,6 +373,21 @@ static const hcakey_info hcakey_list[] = {
         /* Re:Zero - Lost in Memories (Android) */
         {1611432018519751642},      // 165CF4E2138F7BDA
 
+        /* D4DJ Groovy Mix (Android) [base files] */
+        {393410674916959300},       // 0575ACECA945A444
+
+        /* Toji no Miko: Kizamishi Issen no Tomoshibi (Android) */
+        {62057514034227932},        // 00DC78FAEFA76ADC
+
+        /* Readyyy! (Android) */
+        {1234567890987654321},      // 112210F4B16C1CB1
+
+        /* HoneyWorks Premium Live (Android) */
+        {20200401000000},           // 0000125F45B9D640
+
+        /* Assault Lily Last Bullet (Android) */
+        {6349046567469313},         // 00168E6C99510101
+
         /* Dragalia Lost (iOS/Android) */
         {2967411924141,         subkeys_dgl, sizeof(subkeys_dgl) / sizeof(subkeys_dgl[0]) },    // 000002B2E7889CAD
 

@@ -22,7 +22,7 @@ Latest development is usually here: https://github.com/losnoco/vgmstream/
 
 Latest releases are here: https://github.com/losnoco/vgmstream/releases
 
-Automated builds with the latest changes: https://vgmstream-builds.losno.co/latest/
+Automated builds with the latest changes: https://vgmstream.org/downloads
 
 You can find further info about other details in https://github.com/losnoco/vgmstream/tree/master/doc
 
@@ -45,6 +45,7 @@ Put the following files somewhere Windows can find them:
 - `libatrac9.dll`
 - `libcelt-0061.dll`
 - `libcelt-0110.dll`
+- `libspeex.dll`
 
 For Winamp/XMPlay/command line this means in the directory with the main .exe,
 or in a system directory, or any other directory in the PATH variable.
@@ -72,7 +73,7 @@ Available commands are printed when run with no flags. Note that you can also
 achieve similar results for other plugins using TXTP, described later.
 
 With files multiple subsongs you need to specify manually subsong (by design, to avoid
-massive data dumps since some formats have hundred of subsongs), but you could do
+massive data dumps since some formats have hundreds of subsongs), but you could do
 some command line tricks:
 ```
 : REM extracts from subsong 5 to 10 in file.fsb
@@ -101,7 +102,7 @@ and follow the above instructions for installing the other files needed.
 Note that this has less features compared to in_vgmstream and has no configuration.
 Since XMPlay supports Winamp plugins you may also use `in_vgmstream.dll` instead.
 
-Because the XMPlay MP3 decoder incorrectly tries to play some vgmstream exts,
+Because the XMPlay MP3 decoder incorrectly tries to play some vgmstream extensions,
 you need to manually fix it by going to **options > plugins > input > vgmstream**
 and in the "priority filetypes" put: `ahx,asf,awc,ckd,fsb,genh,msf,p3d,rak,scd,txth,xvag`
 
@@ -117,18 +118,18 @@ automatically. You need to manually refresh it by selecting songs and doing
 **shift + right click > Tagging > Reload info from file(s)**.
 
 ### Audacious plugin
-*Installation*: needs to be manually built. Instructions can be found in the BUILD
-document in vgmstream's source code.
+*Installation*: needs to be manually built. Instructions can be found in doc/BUILD.md
+document in vgmstream's source code (can be done with CMake or autotools).
 
 ### vgmstream123
-*Installation*: needs to be manually built. Instructions can be found in the BUILD
-document in vgmstream's source code.
+*Installation*: needs to be manually built. Instructions can be found in doc/BUILD.md
+document in vgmstream's source code (can be done with CMake or autotools).
 
 Usage: `vgmstream123 [options] INFILE ...`
 
 The program is meant to be a simple stand-alone player, supporting playback
 of vgmstream files through libao. Files compressed with gzip/bzip2/xz also
-work, as identified by a .gz/.bz2/.xz extension. The file will be decompressed
+work, as identified by a `.gz/.bz2/.xz` extension. The file will be decompressed
 to a temp dir using the respective utility program (which must be installed
 and accessible) and then loaded.
 
@@ -160,42 +161,42 @@ multiple .txtp (explained below) to select one of the subsongs (like `bgm.sxd#10
 
 You can use this python script to autogenerate one `.txtp` per subsong:
 https://github.com/losnoco/vgmstream/tree/master/cli/txtp_maker.py
-Put in the same dir as test.exe/vgmstream_cli, then to drag-and-drop files with subsongs
-to `txtp_maker.py`.
+Put in the same dir as test.exe/vgmstream_cli, then to drag-and-drop files with
+subsongs to `txtp_maker.py` (it has CLI options to control output too).
 
 ### Renamed files
 A few extensions that vgmstream supports clash with common ones. Since players
 like foobar or Winamp don't react well to that, they may be renamed to make
 them playable through vgmstream.
-- .aac to .laac (tri-Ace games)
-- .ac3 to .lac3 (standard AC3)
-- .aif to .laif or .aiffl or .aifcl (standard Mac AIF, Asobo AIF, Ogg)
-- .aiff/aifc to .aiffl/aifcl (standard Mac AIF)
-- .asf to .lasf (EA games, Argonaut ASF)
-- .bin to .lbin (various)
-- .flac to .lflac (standard FLAC)
-- .mp2 to .lmp2 (standard MP2)
-- .mp3 to .lmp3 (standard MP3)
-- .mp4 to .lmp4 (standard M4A)
-- .mpc to .lmpc (standard MPC)
-- .ogg to .logg (standard OGG)
-- .opus to .lopus (standard OPUS or Switch OPUS)
-- .stm to .lstm (Rockstar STM)
-- .wav to .lwav (standard WAV)
-- .wma to .lwma (standard WMA)
-- .(any) to .vgmstream (FFmpeg formats or TXTH)
+- `.aac` to `.laac` (tri-Ace games)
+- `.ac3` to `.lac3` (standard AC3)
+- `.aif` to `.laif` (standard Mac AIF, Asobo AIF, Ogg)
+- `.aiff/aifc` to `.laiffl/laifc` (standard Mac AIF)
+- `.asf` to `.lasf` (EA games, Argonaut ASF)
+- `.bin` to `.lbin` (various)
+- `.flac` to `.lflac` (standard FLAC)
+- `.mp2` to `.lmp2` (standard MP2)
+- `.mp3` to `.lmp3` (standard MP3)
+- `.mp4` to `.lmp4` (standard M4A)
+- `.mpc` to `.lmpc` (standard MPC)
+- `.ogg` to `.logg` (standard OGG)
+- `.opus` to `.lopus` (standard OPUS or Switch OPUS)
+- `.stm` to `.lstm` (Rockstar STM)
+- `.wav` to `.lwav` (standard WAV)
+- `.wma` to `.lwma` (standard WMA)
+- `.(any)` to `.vgmstream` (FFmpeg formats or TXTH)
 
 Command line tools don't have this restriction and will accept the original
 filename.
 
 The main advantage to rename them is that vgmstream may use the file's
 internal loop info, or apply subtle fixes, but is also limited in some ways
-(like standard/player's tagging). .vgmstream is a catch-all extension that
+(like standard/player's tagging). `.vgmstream` is a catch-all extension that
 may work as a last resort to make a file playable.
 
 Some plugins have options that allow any extension (common or unknown) to be
-played, making renaming unnecessary (may need to adjust plugin priority in
-player's options).
+played, making renaming unnecessary. You may need to adjust plugin priority in
+player's options first.
 
 Also be aware that some plugins can tell the player they handle some extension,
 then not actually play it. This makes the file unplayable as vgmstream doesn't
@@ -214,49 +215,112 @@ vgmstream also supports audio from videos, but usually must be demuxed (extracte
 without modification) first, since vgmstream doesn't attempt to support them.
 
 The easiest way to do this is using VGMToolBox's "Video Demultiplexer" option
-for common game video formats (.bik, .vp6, .pss, .pam, .pmf, .usm, .xmv, etc).
+for common game video formats (`.bik`, `.vp6`, `.pss`, `.pam`, `.pmf`, `.usm`, `.xmv`, etc).
 
-For standard videos formats (.avi, .mp4, .webm, .m2v, .ogv, etc) not supported
-by VGMToolBox FFmpeg binary may work:
+For standard videos formats (`.avi`, `.mp4`, `.webm`, `.m2v`, `.ogv`, etc) not supported
+by VGMToolBox, FFmpeg binary may work:
 - `ffmpeg.exe -i (input file) -vn -acodec copy (output file)`
 Output extension may need to be adjusted to some appropriate audio file depending
-on the audio codec used. ffprobe.exe can list this codec, though the correct audio
-extension depends on the video itself (like .avi to .wav/mp2/mp3 or .ogv to .ogg).
+on the audio codec used. `ffprobe.exe` can list this codec, though the correct audio
+extension depends on the video itself (like `.avi` to `.wav/mp2/mp3` or `.ogv` to `.ogg`).
 
-Some games use custom video formats, demuxer scripts in .bms format may be found
+Some games use custom video formats, demuxer scripts in `.bms` format may be found
 on the internet.
 
 ### Companion files
-Some formats have companion files with external looping info, and should be
-left together.
-- .mus (playlist for .acm)
-- .pos (loop info for .wav, and sometimes .ogg)
-- .ogg.sli or .sli (loop info for .ogg)
-- .ogg.sfl (loop info for .ogg)
-- .vgmstream.pos (loop info for FFmpeg formats)
-  - also possible for certain extensions like .lflac.pos
+Some formats have companion files with external info, that should be left together:
+- `.mus`: playlist with `.acm`
+- `.ogg.sli` or `.sli`: loop info for `.ogg`
+- `.ogg.sfl` : loop info for `.ogg`
+- `.opus.sli`: loop info for `.opus`
+- `.pos`: loop info for .wav
+- `.vgmstream.pos`: loop info for FFmpeg formats
+- `.acb`: names for `.awb`
+- `.xsb`: names for `.xwb`
 
-Similarly some formats split header and/or data in separate files (.sgh+sgd,
-.wav.str+.wav, (file)_L.dsp+(file)_R.dsp, etc). vgmstream will also detect
-and use those as needed and must be together, even if only one of the two
-will be used to play.
+Similarly some formats split header+body data in separate files, examples:
+- `.abk`+`.ast`
+- `.bnm`+`.apm/wav`
+- `.ktsl2asbin`+`.ktsl2stbin`
+- `.mih`+`.mib`
+- `.mpf`+`.mus`
+- `.pk`+`.spk`
+- `.sb0`+`.sp0` (or other numbers instead of `0`)
+- `.sgh`+`.sgd`
+- `.snr`+`.sns`
+- `.spt`+`.spd`
+- `.sts`+`.int`
+- `.xwh`+`.xwb`
+- `.xps`+`dat`
+- `.wav.str`+`.wav`
+- `.wav`+`.dcs`
+- `.wbh`+`.wbd`
+Both are needed to play and must be together. The usual rule is you open the
+bigger file (body), save a few formats where the smaller (header) file is opened
+instead for technical reasons (mainly some bank formats).
 
-.pos is a small file with 32 bit little endian values: loop start sample
-and  loop end sample. For FFmpeg formats (.vgmstream.pos) it may optionally
-have total samples after those.
+Generally companion files are named the same (`bgm.awb`+`bgm.acb`), or internally
+point to another file `sfx.sb0`+`STREAM.sb0`. A few formats may have different names
+which are hardcoded instead of being listed in the header file (e.g. `.mpf+.mus`).
+In these cases, you can use *TXTM* format to specify associated companion files.
+See *Artificial files* below for more information.
+
+#### Dual stereo
+A special case of the above is "dual file stereo", where 2 similarly named mono
+files are fused together to make 1 stereo song.
+- `(file)_L.dsp`+`(file)_R.dsp`
+- `(file)-l.dsp`+`(file)-l.dsp`
+- `(file).L`+`(file).R`
+- `(file)_0.dsp`+`(file)_1.dsp`
+- `(file)_Left.dsp`+`(file)_Right.dsp`
+- `(file).v0`+`(file).v1`
+
+vgmstream automatically detects these pairs and makes a stereo song from `L` + `R`.
+You can open either `L` or `R` and you'll get the same stereo. If you rename one
+of the files the "pair" won't be found, and both will be played as mono. This
+is only done for a few choice formats (mainly `.dsp` and `.vag`) that commonly
+split audio like that, though.
+
+#### OS case sensitiveness
+When using OS with case sensitive filesystem (mainly Linux), a known issue with
+companion files is that vgmstream generally tries to find them using lowercase
+extension.
+
+This means that if the developer used uppercase instead (e.g. `bgm.ABK`+`bgm.AST`)
+loading will fail. It's technically complex to fix this, so for the time being
+the only option is renaming the companion extension to lowercase.
+
+A particularly nasty variation of that is that some formats load files by full
+name (e.g. `STREAM.SS0`), but sometimes the actual filename is in other case
+(`Stream.ss0`), and some files could even point to that with another case. You
+could try adding *symlinks* in various upper/lower/mixed cases to handle this.
+Currently there isn't any way to know what exact name is needed (other than
+hex-editting), though only a few formats do this, mainly *Ubisoft* banks.
+
+Regular formats without companion files should work fine in upper/lowercase.
+
+#### .pos looping
+`.pos` is a small file with 32 bit little endian values: loop start sample and
+loop end sample. This is a real format, but is sometimes reused to force loops.
+
+If you want to force looping consider using *TXTP* instead, as it's much simpler
+to make and cleaner (plus doesn't hijack a real format). For example, make a text
+file named `bgm01-loop.txtp` and inside write `bgm01.mp3 #I 10.0 90.0`. Open the
+`.txtp` and vgmstream will loop that `.mp3` from 10 to 90 seconds.
+
 
 ### Decryption keys
 Certain formats have encrypted data, and need a key to decrypt. vgmstream
 will try to find the correct key from a list, but it can be provided by
 a companion file:
-- .adx: .adxkey (keystring, 8 byte keycode, or derived 6 byte start/mult/add key)
-- .ahx: .ahxkey (derived 6 byte start/mult/add key)
-- .hca: .hcakey (8 byte decryption key, a 64-bit number)
+- `.adx`: `.adxkey` (keystring, 8 byte keycode, or derived 6 byte start/mult/add key)
+- `.ahx`: `.ahxkey` (derived 6 byte start/mult/add key)
+- `.hca`: `.hcakey` (8 byte decryption key, a 64-bit number)
   - May be followed by 2 byte AWB scramble key for newer HCA
-- .fsb: .fsbkey (decryption key, in hex)
-- .bnsf: .bnsfkey (decryption key, a string up to 24 chars)
+- `.fsb`: `.fsbkey` (decryption key in hex, usually between 8-32 bytes) 
+- `.bnsf`: `.bnsfkey` (decryption key, a string up to 24 chars)
 
-The key file can be ".(ext)key" (for the whole folder), or "(name).(ext)key"
+The key file can be `.(ext)key` (for the whole folder), or `(name).(ext)key"
 (for a single file). The format is made up to suit vgmstream.
 
 ### Artificial files
@@ -266,28 +330,44 @@ sample rate, channels, etc) is stored in the .exe or other hard to locate places
 Those can be played using an artificial header with info vgmstream needs.
 
 **GENH**: a byte header placed right before the original data, modyfing it.
-The resulting file must be (name).genh. Contains static header data.
-Programs like VGMToolbox can help to create GENH.
+The resulting file must be `(name).genh`. Contains static header data.
+Programs like VGMToolbox can help to create *GENH*.
 
 **TXTH**: a text header placed in an external file. The TXTH must be named
 `.txth` or `.(ext).txth` (for the whole folder), or `(name.ext).txth` (for a
 single file). Contains dynamic text commands to read data from the original
 file, or static values.
 
-*TXTH* is recomended over *GENH* as it's far easier to create and has many
+*TXTH* is recommended over *GENH* as it's far easier to create and has many
 more functions.
-
 
 For files that already play, sometimes they are used by the game in various
 complex and non-standard ways, like playing multiple small songs as a single
 one, or using some channels as a section of the song. For those cases we
-can use create a *TXTP* file.
+can create a *TXTP* file.
 
 **TXTP**: text files with player configuration, named `(name).txtp`. Text inside
 can contain a list of filenames to play as one (ex. `intro.vag(line)loop.vag`),
 list of separate channel files to join as a single multichannel file,
 subsong index (ex. `bgm.sxd#10`), per-file configurations like number of
-loops, remove unneeded channels, and many other features.
+loops, remove unneeded channels, make looping files, and many other features.
+
+**TXTM**: text file named `.txtm` for formats with companion files. It lists
+name combos determining which companion files to load for each main file.
+It is useful for formats where name combos are hardcoded so vgmstream doesn't
+know which companion file(s) to load if its name doesn't match the main file.
+Note that companion file order is usually important.
+
+Usage example:
+```
+# Harry Potter and the Chamber of Secrets (PS2)
+entrance.mpf:entrance.mus,entrance_o.mus
+willow.mpf:willow.mus,willow_o.mus
+```
+```
+# Metal Gear Solid: Snake Eater 3D (3DS) names for .awb
+bgm_2_streamfiles.awb: bgm_2.acb
+```
 
 Creation of those files is meant for advanced users, docs can be found in
 vgmstream source.
@@ -300,10 +380,10 @@ really opening it (should show "VGMSTREAM" somewhere in the file info), and
 try to remove a few other plugins.
 
 foobar's FFmpeg plugin and foo_adpcm are known to cause issues, but in
-recent versions (1.4.x) you can configure plugin priority.
+modern versions (+1.4.x) you can configure plugin priority.
 
 In Audacious, vgmstream is set with slightly higher priority than FFmpeg,
-since it steals many formats that you normally want to loop (like .adx).
+since it steals many formats that you normally want to loop (like `.adx`).
 However other plugins may set themselves higher, stealing formats instead.
 If current Audacious version doesn't let to change plugin priority you may
 need to disable some plugins (requires restart) or set priority on compile
@@ -322,14 +402,17 @@ since it can't guess how the file should be properly adjusted).
 
 You can also choose which channels to play using *TXTP*. For example, create
 a file named `song.adx#C1,2.txtp` to play only channels 1 and 2 from `song.adx`.
+*TXTP* also has command to tweak how files is downmixed.
 
 
 ## Tagging
 Some of vgmstream's plugins support simple read-only tagging via external files.
 
 Tags are loaded from a text/M3U-like file named *!tags.m3u* in the song folder.
-You don't have to load your songs with that M3U though (but you can, for pre-made
-ordering), the file itself just 'looks' like an M3U.
+You don't have to load your songs with this M3U though, but you can (for pre-made
+order). The format is meant to be both a quick playlist and tags, but the tagfile
+itself just 'looks' like an M3U. you can load files manually or using other playlists
+and still get tags.
 
 Format is:
 ```
@@ -348,13 +431,15 @@ or uppercase, separated by one or multiple spaces. Repeated tags overwrite previ
 (ex.- may define *@COMPOSER* multiple times for "sections"). It only reads up to
 current *filename* though, so any *@TAG* below would be ignored.
 
-Playlist title formatting should follow player's config. ASCII or UTF-8 tags work.
-
 *GLOBAL_COMMAND*s currently can be:
 - *AUTOTRACK*: sets *%TRACK* tag automatically (1..N as files are encountered
   in the tag file).
 - *AUTOALBUM*: sets *%ALBUM* tag automatically using the containing dir as album.
 - *EXACTMATCH*: disables matching .txtp with regular files (explained below).
+
+Playlist title formatting (how tags are shown) should follow player's config, as
+vgmstream simply passes tags to the player. It's better to name the file lowercase
+`!tags.m3u` rather than `!Tags.m3u` (Windows accepts both but Linux is case sensitive).
 
 Note that with global tags you don't need to put all files inside. This would be
 a perfectly valid *!tags.m3u*:
@@ -362,6 +447,21 @@ a perfectly valid *!tags.m3u*:
 # @ALBUM    Game
 # @ARTIST   Various Artists
 ```
+
+### Non-English filenames and tags
+Tags and filenames using extended characters (like Japanese) should work, as long
+as `!tags.m3u` is saved as *"UTF-8 with BOM"* (UTF-8 is a way to define non-English
+characters, and BOM is a helper "byte-order" mark). Windows' *notepad* creates files
+*"with BOM"* when selecting UTF-8 encoding in *save as* dialog, or you may use other
+programs like *notepad++.exe* to convert them.
+
+More exactly, vgmstream matches filenames and reads tags assuming they are in UTF-8,
+while foobar/winamp can only read UTF-8 Japanese/extended filenames in a `.m3u` if file
+is saved *with BOM* (opening files manually or with a `playlist.m3u8` won't need BOM).
+
+Other players may not need BOM (or CRLF), but for consistency use them when dealing
+with non-ASCII names and tags.
+
 
 ### Tags with spaces
 Some players like foobar accept tags with spaces. To use them surround the tag
@@ -387,8 +487,8 @@ enabled in preferences):
 ```
 
 ### TXTP matching
-To ease *TXTP* config, tags with plain files will match .txtp with config, and tags
-with .txtp config also match plain files:
+To ease *TXTP* config, tags with plain files will match `.txtp` with config, and tags
+with `.txtp` config also match plain files:
 **!tags.m3u**
 ```
 # @TITLE    Title1
@@ -428,7 +528,7 @@ BGM01.adx #I 1.0 90.0 .txtp
 
 ### Issues
 If your player isn't picking tags make sure vgmstream is detecting the song
-(as other plugins can steal its extensions, see above), .m3u is properly
+(as other plugins can steal its extensions, see above), `.m3u` is properly
 named and that filenames inside match the song filename. For Winamp you need
 to make sure *options > titles > advanced title formatting* checkbox is set and
 the format defined.
@@ -440,11 +540,11 @@ When tags change behavior varies depending on player:
 - *Audacious*: files need to be readded to the playlist
 
 Currently there is no tool to aid in the creation of these tags, but you can create
-a base .m3u and edit as a text file.
+a base `.m3u` and edit as a text file.
 
 vgmstream's "m3u tagging" is meant to be simple to make and share (just a text
 file), easier to support in multiple players (rather than needing a custom plugin),
-allow OST-like ordering but also combinable with other .m3u, and be flexible enough
+allow OST-like ordering but also combinable with other `.m3u`, and be flexible enough
 to have commands. If you are not satisfied with vgmstream's tagging format,
 foobar2000 has other plugins (with write support) that may be of use:
 - m-TAGS: http://www.m-tags.org/
@@ -452,14 +552,14 @@ foobar2000 has other plugins (with write support) that may be of use:
 
 
 ## Virtual TXTP files
-Some of vgmstream's plugins allow you to use virtual .txtp files, that combined
+Some of vgmstream's plugins allow you to use virtual `.txtp` files, that combined
 with playlists let you make quick song configs.
 
 Normally you can create a physical .txtp file that points to another file with
-config, and .txtp have a "mini-txtp" mode that configures files with only the
+config, and `.txtp` have a "mini-txtp" mode that configures files with only the
 filename.
 
-Instead of manually creating .txtp files you can put non-existing virtual .txtp
+Instead of manually creating `.txtp` files you can put non-existing virtual `.txtp`
 in a `.m3u` playlist:
 ```
 # playlist that opens subsongs directly without having to create .txtp
@@ -489,14 +589,18 @@ You can also use it in CLI for quick access to some txtp-exclusive functions:
 test.exe -o btl_koopa1_44k_lp.wav "btl_koopa1_44k_lp.brstm  #h22050.txtp"
 ```
 
+Support for this feature is limited by player itself, as foobar and Winamp allow
+non-existant files referenced in a `.m3u`, while other players may filter them
+first.
+
 
 ## Supported codec types
 Quick list of codecs vgmstream supports, including many obscure ones that
 are used in few games.
 
 - PCM 16-bit
-- PCM 8-bit (signed/unsigned)
-- PCM 4-bit (signed/unsigned)
+- PCM 8-bit (signed, unsigned)
+- PCM 4-bit (signed, unsigned)
 - PCM 32-bit float
 - u-Law/a-LAW
 - CRI ADX (standard, fixed, exponential, encrypted)
@@ -530,6 +634,8 @@ are used in few games.
 - OKI 4-bit ADPCM (16-bit output, 4-shift, PC-FX)
 - Ubisoft 4/6-bit ADPCM
 - Tiger Game.com ADPCM
+- LucasArts iMUSE VBR ADPCM
+- CompressWave Huffman ADPCM
 - SDX2 2:1 Squareroot-Delta-Exact compression DPCM
 - CBD2 2:1 Cuberoot-Delta-Exact compression DPCM
 - Activision EXAKT SASSC DPCM
@@ -543,6 +649,7 @@ are used in few games.
 - MPEG MP1/2/3 (standard, AHX, XVAG, FSB, AWC, P3D, etc)
 - ITU-T G.722.1 annex C (Polycom Siren 14)
 - ITU-T G.719 annex B (Polycom Siren 22)
+- Electronic Arts EASpeex
 - Electronic Arts EALayer3
 - Electronic Arts EA-XMA
 - Sony ATRAC3, ATRAC3plus
